@@ -1,0 +1,8 @@
+ocfl-demos/
+sensor-data/
+node_modules/
+oni-express/
+oni-indexer/
+.DS_Store
+.idea
+*.pyc
