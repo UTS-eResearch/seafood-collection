@@ -32,11 +32,9 @@ Generate an OCFL
 ```shell script
 node ro-crate-deposit.js --repo=ocfl --name seafood ../sensor-data/*
 ```
-This will create a sensor-data folder
+This will generate an ocfl directory called `ocfl-demos` in the same directory to create an ocfl repo called 'ocfl' which contains all of those RO-Crates and data.
 
-in the same directory to create an ocfl repo called 'ocfl' which contains all of those RO-Crates and data.
-
-Next set up ONI
+Next step: Set up ONI
 
 See [ONI.md](./ONI.md)
 
