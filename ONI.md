@@ -3,23 +3,10 @@
 Get latest version of oni-express
 
 ```shell script
-git clone -b release-1.2.0.rc1 https://github.com/UTS-eResearch/oni-express.git
+git clone -b feature-plugin_subcrate https://github.com/moisbo/oni-express
 ```
 
 This will generate a folder oni-express
-
-Get the latest version of oni-indexer
-
-```shell script
-git clone -b release-1.2.0.rc1 https://github.com/UTS-eResearch/oni-indexer.git
-```
-
-```
-.../oni-express
-.../oni-indexer
-
-    ** It is crucial that these two repo's are sibling folders.
-```
 
 Change directories to oni-express. This will be the main working directory of an ONI
 
