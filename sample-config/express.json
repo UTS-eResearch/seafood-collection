@@ -1,35 +1,34 @@
 {
 	"development": {
 		"session": {
-			"secret": "change me to a real secret",
+			"secret": "secretoysters",
 			"name": "session",
 			"expiry": 24,
 			"server": "memcached:11211"
 		},
-
 		"auth": {
 			"UNSAFE_MODE": true
 		},
-
 		"cors": true,
-
-		"solr": "http://solr:8983",
-
+		"solr": "http://localhost:8983",
 		"clientBlock": [ "isIE" ],
-
 		"ocfl": {
 			"url_path": "ocfl",
-			"repository": "/etc/share/ocfl",
+			"repository": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/ocfl",
 			"allow": "\\.html",
-			"autoindex": true,
+			"autoindex": false,
 			"index_file": "ro-crate-preview.html",
-			"versions": true,
+			"versions": false,
 			"page_size": 20,
-			"solr": "http://solr:8983/solr/ocfl",
-			"resolver": ""
+			"solr": "http://localhost:8983/solr/ocfl",
+			"resolver": "solr",
+			"referrer": "http://localhost:8080/"
 		},
-		"portal": "/etc/share/config/portal.json",
-		"indexer": "/etc/share/config/indexer.json"
+		"portal": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/config/portal.json",
+		"indexer": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/config/indexer.json",
+		"api": {
+			"enabled": true,
+			"token": "theseafoodtoken"
+		}
 	}
-
 }

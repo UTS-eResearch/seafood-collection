@@ -1,5 +1,5 @@
 {
-  "ocfl": "/etc/share/ocfl",
+  "ocfl": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/ocfl",
   "identifierNamespace": "seafood",
   "uriIds": "identifiers",
   "retries": 10,
@@ -8,74 +8,77 @@
   "updateSchema": true,
   "dryRun": false,
   "catalogFilename": "ro-crate-metadata.json",
-  "solrBase": "http://solr:8983/solr/ocfl",
+  "solrBase": "http://localhost:8983/solr/ocfl",
   "hashAlgorithm": "md5",
-  "schemaBase": "/etc/share/config/schema_base.json",
+  "waitPeriod": 0,
+  "schemaBase": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/config/schema_base.json",
 
   "logLevel": "debug",
 
-  "dump": "/etc/share/dump",
-
   "log": {
-    "filename": "/etc/share/logs/indexer.log",
+    "filename": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/logs/indexer.log",
     "level": "debug"
   },
-
-
   "portal": {
-    "base": "/etc/share/config/portal_base.json",
-    "config": "/etc/share/config/portal.json",
+    "base": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/config/portal_base.json",
+    "config": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/config/portal.json",
     "facetDefaults": {
       "limit": 5
     }
   },
-
-
-
   "fields": {
-    "main_search": [ "name", "description", "id" ],
+    "main_search": [
+      "name",
+      "description",
+      "id"
+    ],
     "map_all": {
-      "@id": [ "id", "id_orig" ],
-      "@type": [ "record_type_s", "type_label" ]
+      "@id": [
+        "id",
+        "id_orig"
+      ],
+      "@type": [
+        "record_type_s",
+        "type_label"
+      ]
     },
-
     "licenses": {
       "__default__": "public"
     },
-
+    "store_subgraph": false,
     "types": {
-
       "Dataset": {
-
         "@id": {
-         "name": "seafood",
-         "filter": { "is_root": true }
+          "name": "seafood",
+          "filter": {
+            "is_root": true
+          }
         },
-
-        "@reverse": { "skip": true },
-
-        "hasPart": { "skip": true },
-
-        "hasFile": { "skip": true },
-
-        "temporalCoverage": { "skip": true },
-
+        "@reverse": {
+          "skip": true
+        },
+        "hasPart": {
+	  "skip":true
+	},
+        "hasFile": {
+          "skip": true
+        },
+        "temporalCoverage": {
+          "skip": true
+        },
         "contentLocation": {
           "multi": true,
           "facet": true,
-          "resolve": {
-            "search": "@id",
-            "display": "name"
-          }
-        },
-
-        "month":{
-          "multi": true,
-          "facet": true
+	  "resolve": {
+	    "search": "@id",
+	    "display": "name"
+	},
+	"month": {
+	  "multi": true,
+	  "facet": true
         }
       }
-
-
     }
   }
+}
 }
