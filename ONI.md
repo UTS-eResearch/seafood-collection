@@ -3,7 +3,7 @@
 Get latest version of oni-express
 
 ```shell script
-git clone -b feature-plugin_subcrate https://github.com/moisbo/oni-express
+git clone -b release-1.2.1.rc1 https://github.com/UTS-eResearch/oni-express
 ```
 
 This will generate a folder oni-express
