@@ -29,6 +29,11 @@ Run docker-compose
 docker-compose up
 ```
 
+Start the indexing process
+```shell script
+curl localhost:8080/config/index/run --header "Authorization: Bearer theseafoodtoken"
+```
+
 Stop Docker
 ```shell script
 docker-compose stop
