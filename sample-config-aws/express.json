@@ -1,0 +1,34 @@
+{
+	"development": {
+		"session": {
+			"secret": "secretoysters",
+			"name": "session",
+			"expiry": 24,
+			"server": "127.0.0.1:11211"
+		},
+		"auth": {
+			"UNSAFE_MODE": true
+		},
+		"cors": true,
+		"solr": "http://127.0.0.1:8983",
+		"clientBlock": [ "isIE" ],
+		"ocfl": {
+			"url_path": "ocfl",
+			"repository": "/etc/share/ocfl",
+			"allow": "\\.html",
+			"autoindex": false,
+			"index_file": "ro-crate-preview.html",
+			"versions": false,
+			"page_size": 20,
+			"solr": "http://127.0.0.1:8983/solr/ocfl",
+			"resolver": "solr",
+			"referrer": ""
+		},
+		"portal": "/etc/share/config/portal.json",
+		"indexer": "/etc/share/config/indexer.json",
+		"api": {
+			"enabled": true,
+			"token": "theseafoodtoken"
+		}
+	}
+}
