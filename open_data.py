@@ -1,5 +1,6 @@
 from rocrate.rocrate import ROCrate # for creating the metadata files
 from rocrate.model.preview import Preview # For creating the HTML representation of the ROCrates
+from rocrate.model.entity import Entity
 import os # for accessing the files
 import openpyxl # For opening the excel
 import csv # For saving the csv file
@@ -7,10 +8,10 @@ import matplotlib.pyplot as plt # For creating a diagram
 from dateutil import parser # For handling ISO 8601 strings
 
 # Plans:
-# - Split into monthly csvs, from first of the month 00AM to last of the month 11:59PM -
-# - Calculate max, min and avg values for readings over the month
-# - Create a diagram for temperature and salinity
-# - Create an RO-Crate with those values
+# - Split into monthly csvs, from first of the month 00AM to last of the month 11:59PM - DONE!
+# - Calculate max, min and avg values for readings over the month - DONE!
+# - Create a diagram for temperature, depth and salinity = DONE!
+# - Create an RO-Crate with those values - DONE!
 # - Link up both the raw data and "working data" (decide whether to take readings from one or both?)
 # - Include a link in the ro-crate back to the website (or DOI) where this data can be obtained
 # - Add notes around the data into RO-Crates for specific sensors and dates
@@ -20,9 +21,10 @@ from dateutil import parser # For handling ISO 8601 strings
 NOTES_FILE = "2020-02-20 Summary working notes on data READ FIRST.xlsx"
 RAW_SHEET = "raw data" # Includes this phrase, prefixed by location
 WORKING_SHEET = "Working data" # Includes this phrase, prefixed by location
+NEW_CSV_FILE_FOLDER = "split_data"
 
 def get_file_name(raw_working,sensor,start_month,start_year,end_month,end_year):
-    file_name = "out_" + sensor + "_" + start_month + start_year + "_" + end_month + end_year + "_" + raw_working + ".csv"
+    file_name = "out_" + sensor + "_" + start_month + start_year + "_" + end_month + end_year + "_" + raw_working
     return file_name
 
 def select_sheet(name_part, workbook):
@@ -37,9 +39,10 @@ def select_sheet(name_part, workbook):
         return selected_sheet
 
 def save_csv_file(sheet,header_row,start_row,end_row,file_name):
-    if not os.path.exists(file_name[:-4]):
-        os.mkdir(file_name[:-4])
-    with open(os.path.join(file_name[:-4],file_name),'w',newline='') as csv_file:
+
+    if not os.path.exists(NEW_CSV_FILE_FOLDER):
+        os.mkdir(NEW_CSV_FILE_FOLDER)
+    with open(os.path.join(NEW_CSV_FILE_FOLDER,file_name + ".csv"),'w',newline='') as csv_file:
         fw = csv.writer(csv_file)
         fw.writerow(header_row)
         for row in sheet.iter_rows(min_row=start_row, max_row=end_row):
@@ -48,7 +51,35 @@ def save_csv_file(sheet,header_row,start_row,end_row,file_name):
                 row_values.append(cell.value)
             fw.writerow(row_values)
 
-def package_data(temperature,salinity,depth,csv_file_name):
+def add_quantitative_value(crate, id, value, unitCode, name, file_name):
+    properties = {"@type": "QuantitativeValue", "name": name, "unitCode": unitCode, "value":value}
+    qv = Entity(crate, identifier=id, properties=properties)
+    #qv.type = "QuantititiveValue"
+    crate.add(qv)
+    update_file_entity(crate, file_name, name, {"@id":id})
+    #### Need to link this added entity to the root dataset
+
+def update_file_entity(crate, file_name, new_property_key, new_property_value):
+    # Get the right entity first
+    for entity in list(crate.get_entities()):
+        ent_props = entity.properties()
+        if file_name + ".csv" in ent_props.values(): # If the file name shows up in the properties of this entity
+            old_entity = entity
+    if old_entity:
+        new_properties = old_entity.properties()
+        new_properties[new_property_key] = new_property_value
+        new_entity = Entity(crate, properties=new_properties)
+    else:
+        print("No file with that name in the crate :(")
+        return None
+
+
+def package_data(crate,temperature,salinity,depth,file_name, data_entity):
+    ## Plot the data, and set as crate image
+    plot_three_datas(salinity, temperature, depth, file_name)
+    crate.add_file(file_name + ".png")
+    crate.image = file_name + ".png"
+    ## Calculate the min, max and avg values, and add to the dataset in the crate
     avg_temp = round(sum(temperature)/len(temperature),4)
     min_temp = min(temperature)
     max_temp = max(temperature)
@@ -58,21 +89,55 @@ def package_data(temperature,salinity,depth,csv_file_name):
     avg_dep = round(sum(depth)/len(depth),4)
     min_dep = min(depth)
     max_dep = max(depth)
-    plot_data(temperature, csv_file_name[:-4] + "_temperature.png")
-    plot_data(depth, csv_file_name[:-4] + "_depth.png")
-    plot_data(salinity, csv_file_name[:-4] + "_salinity.png")
+    # Add temperature values
+    add_quantitative_value(crate, "avgTemperature", avg_temp, "CEL", "Average Temperature", file_name)
+    add_quantitative_value(crate, "minTemperature", min_temp, "CEL", "Minimum Temperature", file_name)
+    add_quantitative_value(crate, "maxTemperature", max_temp, "CEL", "Maximum Temperature", file_name)
+    # Add salinity values
+    add_quantitative_value(crate, "avgSalinity", avg_sal, "NX", "Average Salinity", file_name)
+    add_quantitative_value(crate, "minSalinity", min_sal, "NX", "Minimum Salinity", file_name)
+    add_quantitative_value(crate, "maxSalinity", max_sal, "NX", "Maximum Salinity", file_name)
+    # Add depth values
+    add_quantitative_value(crate, "avgDepth", avg_dep, "MMT", "Average Depth", file_name)
+    add_quantitative_value(crate, "minDepth", min_dep, "MMT", "Minimum Depth", file_name)
+    add_quantitative_value(crate, "maxDepth", max_dep, "MMT", "Maximum Depth", file_name)
+
+
+
+    # list(crate.get_entities()) (returns a list of entities in the crate, can then do list[0].properties() to get properties of dataset)
+
+
 
 # A method which takes in values and saves a (simple) plot of those values in the provided file_name
 def plot_data(value_list, file_name):
     plt.plot(value_list)
     plt.savefig(file_name)
+    plt.clf() # Clears the figure
 
-def create_monthly_ro_crate(temperature,salinity,depth,csv_file_name):
-    crate = ROCrate()
-    crate.add_file(csv_file_name) # Adds the file reference to the crate, and will cause it to be saved next to it when written to disk
-    crate.write_crate(csv_file_name[:-4])
-    preview = Preview(crate) # Create a preview of the crate
-    preview.write(csv_file_name[:-4]) # Write that preview out to the same folder
+def plot_three_datas(salinity, temperature, depth, file_name):
+    figure, (salinity_ax, temperature_ax, depth_ax) = plt.subplots(3,1, sharex=False)
+    salinity_ax.plot(salinity, color='yellow')
+    temperature_ax.plot(temperature, color='red')
+    depth_ax.plot(depth, color='blue')
+    salinity_ax.set_title('Salinity', fontsize=10)
+    salinity_ax.axes.get_xaxis().set_ticklabels([]) # Hides Axis Label
+    temperature_ax.set_title('Temperature', fontsize=10)
+    temperature_ax.axes.get_xaxis().set_ticklabels([]) # Hides Axis Label
+    depth_ax.set_title('Depth',fontsize=10)
+    depth_ax.axes.get_xaxis().set_ticklabels([]) # Hides Axis Label
+    figure.subplots_adjust(hspace=0.3) # Allows for enough space between the subplots to see titles
+    plt.savefig(file_name + ".png")
+    plt.clf()
+
+def create_monthly_ro_crate(temperature,salinity,depth,file_name):
+    crate = ROCrate(gen_preview=False) # Don't generate a preview, since I'll do that using https://github.com/UTS-eResearch/ro-crate-excel
+    file_entity = crate.add_file(os.path.join(NEW_CSV_FILE_FOLDER,file_name + ".csv")) # Adds the file reference to the crate, and will cause it to be saved next to it when written to disk
+    package_data(crate,temperature,salinity,depth,file_name, file_entity)
+    crate.write_crate(file_name)
+    os.system('xlro -j ' + file_name)
+    return file_entity
+    #preview = Preview(crate) # Create a preview of the crate
+    #preview.write(file_name) # Write that preview out to the same folder
 
 
 def load_estuary_data(filepath):
@@ -119,12 +184,12 @@ def load_estuary_data(filepath):
                     end_year = date.year
                     end_row = row[0].row - 1
                     print("Saving rows: ",start_row, " to ", end_row)
-                    csv_file_name = get_file_name("RAW","CH_01", str(start_month), str(start_year), str(end_month), str(end_year))
-                    print("in file: ", csv_file_name)
-                    save_csv_file(active_sheet,headers,start_row,end_row,csv_file_name)
+                    file_name = get_file_name("RAW","CH_01", str(start_month), str(start_year), str(end_month), str(end_year))
+                    print("in file: ", file_name + ".csv")
+                    save_csv_file(active_sheet,headers,start_row,end_row, file_name)
 
 
-                    create_monthly_ro_crate(temperature,salinity,depth,csv_file_name)
+                    create_monthly_ro_crate(temperature,salinity,depth, file_name)
                     # Reset values for the next month
                     start_month = date.strftime("%B")
                     start_year = date.year
