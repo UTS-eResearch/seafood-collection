@@ -12,8 +12,10 @@ from dateutil import parser # For handling ISO 8601 strings
 # - Calculate max, min and avg values for readings over the month - DONE!
 # - Create a diagram for temperature, depth and salinity = DONE!
 # - Create an RO-Crate with those values - DONE!
-# - Link up both the raw data and "working data" (decide whether to take readings from one or both?)
+# - Link up both the raw data and "working data" (decide whether to take readings from one or both?) - DONE!
 # - Include a link in the ro-crate back to the website (or DOI) where this data can be obtained
+# - Add the location
+# - Include author details
 # - Add notes around the data into RO-Crates for specific sensors and dates
 
 
@@ -70,6 +72,7 @@ def add_quantitative_value(crate, id, value, unitCode, name, file_name):
 
 def update_file_entity(crate, file_name, new_property_key, new_property_value):
     # Get the right entity first
+    old_entity = None
     for entity in list(crate.get_entities()):
         ent_props = entity.properties()
         if file_name + ".csv" in ent_props.values(): # If the file name shows up in the properties of this entity
@@ -79,7 +82,7 @@ def update_file_entity(crate, file_name, new_property_key, new_property_value):
         new_properties[new_property_key] = new_property_value
         new_entity = Entity(crate, properties=new_properties)
     else:
-        print("No file with that name in the crate :(")
+        print("No file with that name in the crate: ",file_name + ".csv")
         return None
 
 
@@ -138,11 +141,12 @@ def plot_three_datas(salinity, temperature, depth, file_name):
     plt.savefig(file_name + ".png")
     plt.clf()
 
-def create_monthly_ro_crate(temperature,salinity,depth,file_name, location_name, month, year):
+def create_monthly_ro_crate(temperature,salinity,depth,file_name, location_name, month, year, csv_files):
     crate = ROCrate(gen_preview=False) # Don't generate a preview, since we'll do that using https://github.com/UTS-eResearch/ro-crate-excel
     crate.name = 'Sensor readings from ' + location_name + " in " + month + " " + str(year)
-    file_entity = crate.add_file(os.path.join(NEW_CSV_FILE_FOLDER,file_name + ".csv")) # Adds the file reference to the crate, and will cause it to be saved next to it when written to disk
-    package_data(crate,temperature,salinity,depth,file_name, file_entity)
+    for csv_file in csv_files:
+        file_entity = crate.add_file(os.path.join(NEW_CSV_FILE_FOLDER,csv_file + ".csv")) # Adds the file reference to the crate, and will cause it to be saved next to it when written to disk
+    package_data(crate,temperature,salinity,depth,csv_files[-1], file_entity) # Should use working csv file name (csv_files[-1]), since it needs the full .csv reference
     crate.write_crate(file_name)
     os.system('xlro -j ' + file_name)
     return file_entity
@@ -161,20 +165,10 @@ def get_location_name(location_code):
             return name
     return None
 
-def load_estuary_data(filepath):
-    location_code = get_location_code(filepath)
-    location_name = get_location_name(location_code) # Why have one line, when you can have two
-    print("Loading data from: ",os.path.join(os.getcwd(),filepath))
-    workbook = openpyxl.load_workbook(filepath, read_only=True) # Read-only mode so that it doesn't take up too much memory
-    active_sheet_name = select_sheet(RAW_SHEET, workbook)
-    if active_sheet_name is None:
-        return None
-    print("Using sheet: ", active_sheet_name)
-    active_sheet = workbook[active_sheet_name]
-
+def process_sheet(sheet, raw_status, location_code):
+    value_dict = {}
     header_row = True
     headers = []
-    #### Split here?
     first_row= None
     last_row = None
     start_month = None
@@ -183,7 +177,7 @@ def load_estuary_data(filepath):
     temperature = []
     salinity = []
     # Need to record first row, and then last row of the month, in order to export data
-    for row in active_sheet.rows:
+    for row in sheet.rows:
         # Deal with the header row
         if header_row:
             print(row)
@@ -207,12 +201,13 @@ def load_estuary_data(filepath):
                     end_year = date.year
                     end_row = row[0].row - 1
                     print("Saving rows: ",start_row, " to ", end_row)
-                    file_name = get_file_name("RAW","CH_01", str(start_month), str(start_year), str(end_month), str(end_year))
+                    file_name = get_file_name(raw_status, location_code + "_01", str(start_month), str(start_year), str(end_month), str(end_year))
                     print("in file: ", file_name + ".csv")
-                    save_csv_file(active_sheet,headers,start_row,end_row, file_name)
+                    save_csv_file(sheet,headers,start_row,end_row, file_name)
+                    value_dict[file_name] = {"salinity":salinity, "temperature":temperature,"depth":depth,"start_month":start_month,"start_year":start_year}
 
 
-                    create_monthly_ro_crate(temperature,salinity,depth, file_name, location_name, start_month, start_year)
+
                     # Reset values for the next month
                     start_month = date.strftime("%B")
                     start_year = date.year
@@ -229,13 +224,53 @@ def load_estuary_data(filepath):
             elif row[headers.index("Type")].value == "salinity":
                 salinity.append(row[headers.index("CurrentValue")].value)
     # Handles final rows
-    end_row = active_sheet.max_row
+    end_row = sheet.max_row
     print("Saving rows: ",start_row, " to ", end_row)
-    csv_file_name = get_file_name("RAW","CH_01", str(start_month), str(start_year), str(end_month), str(end_year))
-    print("in file: ", csv_file_name)
-    save_csv_file(active_sheet,headers,start_row,end_row,csv_file_name)
+    csv_file_name = get_file_name(raw_status,location_code + "_01", str(start_month), str(start_year), str(end_month), str(end_year))
+    print("in file: ", csv_file_name + ".csv")
+    save_csv_file(sheet,headers,start_row,end_row,csv_file_name)
+    value_dict[csv_file_name] = {"salinity":salinity, "temperature":temperature,"depth":depth,"start_month":start_month,"start_year":start_year}
+    #create_monthly_ro_crate(temperature,salinity,depth, file_name, location_name, start_month, start_year)
+    return value_dict
+
+def working_from_raw_filename(raw_filename):
+    if "RAW" in raw_filename:
+        working_filename = raw_filename.replace("RAW","WORKING")
+    else:
+        working_filename = raw_filename.replace("raw","working")
+    return working_filename
+
+def process_data(raw_sheet, working_sheet, location_code, location_name):
+    raw_dict = process_sheet(raw_sheet, "RAW", location_code)
+    working_dict = process_sheet(working_sheet, "WORKING", location_code)
+    for raw_key, raw_values in raw_dict.items():
+        plain_filename = raw_key.removesuffix("_RAW")
+        working_key = working_from_raw_filename(raw_key)
+        if working_key in working_dict:
+            working_values = working_dict[working_key]
+            create_monthly_ro_crate(working_values["temperature"],working_values["salinity"],working_values["depth"],plain_filename,location_name,working_values["start_month"],working_values["start_year"],[raw_key, working_key]) # Use the working values when create something
+        else:
+            create_monthly_ro_crate(raw_values["temperature"],raw_values["salinity"],raw_values["depth"],plain_filename,location_name,raw_values["start_month"],raw_values["start_year"],[raw_key]) # Use raw values if no working ones available
+    #for csv_file_pair in csv_files:
+    #    create_monthly_ro_crate(temperature,salinity,depth, file_name, location_name, start_month, start_year, csv_file_pair)
 
 
+def load_estuary_data(filepath):
+    location_code = get_location_code(filepath)
+    location_name = get_location_name(location_code) # Why have one line, when you can have two
+    print("Loading data from: ",os.path.join(os.getcwd(),filepath))
+    workbook = openpyxl.load_workbook(filepath, read_only=True) # Read-only mode so that it doesn't take up too much memory
 
-    print("Min/Max temperature: ",min(temperature), " / ", max(temperature))
+    # process RAW and WORKING data
+    raw_sheet_name = select_sheet(RAW_SHEET, workbook)
+    working_sheet_name = select_sheet(WORKING_SHEET, workbook)
+    if raw_sheet_name is None or working_sheet_name is None:
+        return None
+    print("Using sheets: ", raw_sheet_name, " and ", working_sheet_name)
+    raw_sheet = workbook[raw_sheet_name]
+    working_sheet = workbook[working_sheet_name]
+    process_data(raw_sheet, working_sheet, location_code, location_name)
+
+
+    #print("Min/Max temperature: ",min(temperature), " / ", max(temperature))
     workbook.close() # Need to close since read-only uses "lazy loading"
