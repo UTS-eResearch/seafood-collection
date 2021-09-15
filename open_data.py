@@ -14,8 +14,8 @@ from dateutil import parser # For handling ISO 8601 strings
 # - Create an RO-Crate with those values - DONE!
 # - Link up both the raw data and "working data" (decide whether to take readings from one or both?) - DONE!
 # - Include a link in the ro-crate back to the website (or DOI) where this data can be obtained
-# - Add the location
-# - Include author details
+# - Add the location - DONE!
+# - Include author details - DONE!
 # - Add notes around the data into RO-Crates for specific sensors and dates
 
 
@@ -27,7 +27,32 @@ PLACES = ["Camden Haven","Clyde River","Georges River","Hawkesbury River","Hasti
 PLACE_CODES = {"Camden Haven":"CH","Clyde River":"CLY","Georges River":"GR","Hawkesbury River":"HR","Hastings River":"HR","Manning River":"Man","Pambula Lake":"PAM","Port Stephens":"PS","Shoalhaven Crookhaven Rivers":"SH","Wagonga Inlet":"WAG","Wallis Lake":"WAL","Wonboyn Lake":"WON","Wapengo Lake":"WPG"}
 PLACE_LOCATIONS = {"Camden Haven":"https://sws.geonames.org/8210175/","Clyde River":"https://sws.geonames.org/2171249/","Georges River":"https://sws.geonames.org/2205884/","Hawkesbury River":"https://sws.geonames.org/2205605/","Hastings River":"https://sws.geonames.org/2163834/","Manning River":"https://sws.geonames.org/2158850/","Pambula Lake":"https://sws.geonames.org/8594508/","Port Stephens":"https://sws.geonames.org/9409163/","Shoalhaven Crookhaven Rivers":"https://sws.geonames.org/2149595/","Wagonga Inlet":"https://sws.geonames.org/2207090/","Wallis Lake":"https://sws.geonames.org/8539070/","Wonboyn Lake":"https://sws.geonames.org/8210771/","Wapengo Lake":"https://sws.geonames.org/8594517/"}
 LAT_LONG = {"Camden Haven":["-31.64478","152.82822"],"Clyde River":["-35.70093","150.13341"],"Georges River":["-34.02245","151.176"],"Hawkesbury River":["-33.5443","151.1365167"],"Hastings River":["-31.40406","152.89172"],"Manning River":["-31.89088","152.63981"],"Pambula Lake":["-36.96811903","149.884795"],"Port Stephens":["-32.7196","152.06093"],"Shoalhaven Crookhaven Rivers":["-34.9118","150.74158"],"Wagonga Inlet":["-36.22161","150.07128"],"Wallis Lake":["-32.18268","152.47556"],"Wonboyn Lake":["-37.24121","149.92724"],"Wapengo Lake":["-36.60182","150.01678"]}
-
+AUTHORS = [{
+    "name":"Penelope Ajani",
+    "email": "Penelope.Ajani@uts.edu.au",
+    "FamilyName": "Ajani",
+    "ORCID":"https://orcid.org/0000-0001-5364-9936",
+    "givenName": "Penelope",
+    "affiliation":{
+        "@id": "https://ror.org/03f0f6041",
+        "@type": "Organization",
+        "Description": "The University of Technology Sydney is a public research university located in Sydney, Australia",
+        "name": "University of Technology Sydney"
+        }
+    },
+    {
+    "name":"Shauna Murray",
+    "email": "Shauna.Murray@uts.edu.au",
+    "FamilyName": "Murray",
+    "ORCID":"https://orcid.org/0000-0001-7096-1307",
+    "givenName": "Shauna",
+    "affiliation":{
+        "@id": "https://ror.org/03f0f6041",
+        "@type": "Organization",
+        "Description": "The University of Technology Sydney is a public research university located in Sydney, Australia",
+        "name": "University of Technology Sydney"
+        }
+    }]
 # Globals:
 NOTES_FILE = "2020-02-20 Summary working notes on data READ FIRST.xlsx"
 RAW_SHEET = "raw data" # Includes this phrase, prefixed by location
@@ -62,6 +87,55 @@ def save_csv_file(sheet,header_row,start_row,end_row,file_name):
                 row_values.append(cell.value)
             fw.writerow(row_values)
 
+def add_location(crate, geo_id, geonames_url, lat, long, name):
+    place_properties = {"@type":"Place","name":name,"geo":{"@id":geo_id}}
+    geo_properties = {"@type":"GeoCoordinates", "latitute":lat, "longitude":long, "name":name}
+    place_entity = Entity(crate, identifier=geonames_url, properties=place_properties)
+    geo_entity = Entity(crate, identifier=geo_id, properties=geo_properties)
+    crate.add(geo_entity)
+    crate.add(place_entity)
+    update_root_dataset(crate,"contentLocation",{"@id":geonames_url})
+
+def add_authors(crate, author_list):
+    author = []
+    affiliation = []
+    person = []
+    for author_dict in author_list:
+        affiliation_dict = author_dict["affiliation"]
+        id = author_dict["ORCID"]
+        author.append({"@id":id})
+        person.append({"@id":id, "@type":"Person","FamilyName":author_dict["FamilyName"],"givenName":author_dict["givenName"],"name":author_dict["name"],"affiliation":{"@id":author_dict["affiliation"]["@id"]}})
+        affiliation.append(author_dict["affiliation"])
+    for affiliation_entry in affiliation:
+        affiliation_entity = Entity(crate, identifier=affiliation_entry["@id"],properties=affiliation_entry)
+        crate.add(affiliation_entity)
+    for person_entry in person:
+        person_entity = Entity(crate, identifier=person_entry["@id"], properties=person_entry)
+        crate.add(person_entity)
+    update_root_dataset(crate, "author",author)
+
+
+
+def add_year(crate, year):
+    update_root_dataset(crate, "year", year)
+
+def add_month(crate, month):
+    update_root_dataset(crate,"month",month)
+
+def update_root_dataset(crate, new_property_key, new_property_value):
+    old_entity = None
+    for entity in  list(crate.get_entities()):
+        ent_props = entity.properties()
+        if ent_props["@id"] == "./":
+            old_entity = entity
+    if old_entity:
+        new_props = old_entity.properties()
+        new_props[new_property_key] = new_property_value
+        new_entity = Entity(crate, properties=new_props)
+    else:
+        print("Can't find the root dataset in this crate")
+        return None
+
 def add_quantitative_value(crate, id, value, unitCode, name, file_name):
     properties = {"@type": "QuantitativeValue", "name": name, "unitCode": unitCode, "value":value}
     qv = Entity(crate, identifier=id, properties=properties)
@@ -86,7 +160,7 @@ def update_file_entity(crate, file_name, new_property_key, new_property_value):
         return None
 
 
-def package_data(crate,temperature,salinity,depth,file_name, data_entity):
+def package_data(crate,temperature,salinity,depth,location_name, month, year, file_name, data_entity):
     ## Plot the data, and set as crate image
     plot_three_datas(salinity, temperature, depth, file_name)
     crate.add_file(file_name + ".png")
@@ -114,7 +188,17 @@ def package_data(crate,temperature,salinity,depth,file_name, data_entity):
     add_quantitative_value(crate, "minDepth", min_dep, "MMT", "Minimum Depth", file_name)
     add_quantitative_value(crate, "maxDepth", max_dep, "MMT", "Maximum Depth", file_name)
 
+    #Add location
+    add_location(crate, "_:b0", PLACE_LOCATIONS[location_name], LAT_LONG[location_name][0], LAT_LONG[location_name][1], location_name)
 
+    # Add month
+    #print("adding month")
+    add_month(crate, month)
+    # Add year
+    add_year(crate, year)
+
+    # Add the authors
+    add_authors(crate,AUTHORS)
 
     # list(crate.get_entities()) (returns a list of entities in the crate, can then do list[0].properties() to get properties of dataset)
 
@@ -146,7 +230,7 @@ def create_monthly_ro_crate(temperature,salinity,depth,file_name, location_name,
     crate.name = 'Sensor readings from ' + location_name + " in " + month + " " + str(year)
     for csv_file in csv_files:
         file_entity = crate.add_file(os.path.join(NEW_CSV_FILE_FOLDER,csv_file + ".csv")) # Adds the file reference to the crate, and will cause it to be saved next to it when written to disk
-    package_data(crate,temperature,salinity,depth,csv_files[-1], file_entity) # Should use working csv file name (csv_files[-1]), since it needs the full .csv reference
+    package_data(crate,temperature,salinity,depth,location_name, month, year, csv_files[-1], file_entity) # Should use working csv file name (csv_files[-1]), since it needs the full .csv reference
     crate.write_crate(file_name)
     os.system('xlro -j ' + file_name)
     return file_entity
