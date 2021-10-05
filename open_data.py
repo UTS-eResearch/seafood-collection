@@ -17,16 +17,16 @@ from dateutil import parser # For handling ISO 8601 strings
 # - Add the location - DONE!
 # - Include author details - DONE!
 # - Add notes around the data into RO-Crates for specific sensors and dates
-
+# - Add local timezones
 
 # Globals from generate_data TODO: delete the unnecessary ones of these:
 MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 MONTH_NUMBERS = {"January":"01","February":"02","March":"03","April":"04","May":"05","June":"06","July":"07","August":"08","September":"09","October":"10","November":"11","December":"12"}
 YEARS = ["2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020"]
-PLACES = ["Camden Haven","Clyde River","Georges River","Hawkesbury River","Hastings River","Manning River","Pambula Lake","Pambula Lake","Port Stephens","Shoalhaven Crookhaven Rivers","Wagonga Inlet","Wallis Lake","Wonboyn Lake","Wapengo Lake"]
-PLACE_CODES = {"Camden Haven":"CH","Clyde River":"CLY","Georges River":"GR","Hawkesbury River":"HR","Hastings River":"HR","Manning River":"Man","Pambula Lake":"PAM","Port Stephens":"PS","Shoalhaven Crookhaven Rivers":"SH","Wagonga Inlet":"WAG","Wallis Lake":"WAL","Wonboyn Lake":"WON","Wapengo Lake":"WPG"}
-PLACE_LOCATIONS = {"Camden Haven":"https://sws.geonames.org/8210175/","Clyde River":"https://sws.geonames.org/2171249/","Georges River":"https://sws.geonames.org/2205884/","Hawkesbury River":"https://sws.geonames.org/2205605/","Hastings River":"https://sws.geonames.org/2163834/","Manning River":"https://sws.geonames.org/2158850/","Pambula Lake":"https://sws.geonames.org/8594508/","Port Stephens":"https://sws.geonames.org/9409163/","Shoalhaven Crookhaven Rivers":"https://sws.geonames.org/2149595/","Wagonga Inlet":"https://sws.geonames.org/2207090/","Wallis Lake":"https://sws.geonames.org/8539070/","Wonboyn Lake":"https://sws.geonames.org/8210771/","Wapengo Lake":"https://sws.geonames.org/8594517/"}
-LAT_LONG = {"Camden Haven":["-31.64478","152.82822"],"Clyde River":["-35.70093","150.13341"],"Georges River":["-34.02245","151.176"],"Hawkesbury River":["-33.5443","151.1365167"],"Hastings River":["-31.40406","152.89172"],"Manning River":["-31.89088","152.63981"],"Pambula Lake":["-36.96811903","149.884795"],"Port Stephens":["-32.7196","152.06093"],"Shoalhaven Crookhaven Rivers":["-34.9118","150.74158"],"Wagonga Inlet":["-36.22161","150.07128"],"Wallis Lake":["-32.18268","152.47556"],"Wonboyn Lake":["-37.24121","149.92724"],"Wapengo Lake":["-36.60182","150.01678"]}
+PLACES = ["Camden Haven","Clyde River","Georges River","Hawkesbury River","Hastings River","Manning River","Pambula Lake","Pambula Lake","Port Stephens","Shoalhaven-Crookhaven River","Wagonga Inlet","Wallis Lake","Wonboyn Lake","Wapengo Lake"]
+PLACE_CODES = {"Camden Haven":"CH","Clyde River":"CLY","Georges River":"GR","Hawkesbury River":"HR","Hastings River":"HS","Manning River":"Man","Pambula Lake - downstream":"PAM_02", "Pambula Lake - upstream":"PAM","Port Stephens":"PS","Shoalhaven-Crookhaven River":"SH","Wagonga Inlet":"WAG","Wallis Lake":"WAL","Wonboyn Lake":"WON","Wapengo Lake":"WPG"}
+PLACE_LOCATIONS = {"Camden Haven":"https://sws.geonames.org/8210175/","Clyde River":"https://sws.geonames.org/2171249/","Georges River":"https://sws.geonames.org/2205884/","Hawkesbury River":"https://sws.geonames.org/2205605/","Hastings River":"https://sws.geonames.org/2163834/","Manning River":"https://sws.geonames.org/2158850/","Pambula Lake - upstream":"https://sws.geonames.org/8594508/","Pambula Lake - downstream":"https://sws.geonames.org/8594508/","Port Stephens":"https://sws.geonames.org/9409163/","Shoalhaven-Crookhaven River":"https://sws.geonames.org/2149595/","Wagonga Inlet":"https://sws.geonames.org/2207090/","Wallis Lake":"https://sws.geonames.org/8539070/","Wonboyn Lake":"https://sws.geonames.org/8210771/","Wapengo Lake":"https://sws.geonames.org/8594517/"}
+LAT_LONG = {"Camden Haven":["-31.64478","152.82822"],"Clyde River":["-35.70093","150.13341"],"Georges River":["-34.02245","151.176"],"Hawkesbury River":["-33.5443","151.1365167"],"Hastings River":["-31.40406","152.89172"],"Manning River":["-31.89088","152.63981"],"Pambula Lake - downstream":["-36.96811903","149.884795"],"Pambula Lake - upstream":["-36.96811903","149.884795"],"Port Stephens":["-32.7196","152.06093"],"Shoalhaven-Crookhaven River":["-34.9118","150.74158"],"Wagonga Inlet":["-36.22161","150.07128"],"Wallis Lake":["-32.18268","152.47556"],"Wonboyn Lake":["-37.24121","149.92724"],"Wapengo Lake":["-36.60182","150.01678"]}
 AUTHORS = [{
     "name":"Penelope Ajani",
     "email": "Penelope.Ajani@uts.edu.au",
@@ -55,8 +55,8 @@ AUTHORS = [{
     }]
 # Globals:
 NOTES_FILE = "2020-02-20 Summary working notes on data READ FIRST.xlsx"
-RAW_SHEET = "raw data" # Includes this phrase, prefixed by location
-WORKING_SHEET = "Working data" # Includes this phrase, prefixed by location
+RAW_SHEET = "raw" # Includes this phrase, prefixed by location
+WORKING_SHEET = "Working" # Includes this phrase, prefixed by location
 NEW_CSV_FILE_FOLDER = "split_data"
 
 def get_file_name(raw_working,sensor,start_month,start_year,end_month,end_year):
@@ -166,27 +166,30 @@ def package_data(crate,temperature,salinity,depth,location_name, month, year, fi
     crate.add_file(file_name + ".png")
     crate.image = file_name + ".png"
     ## Calculate the min, max and avg values, and add to the dataset in the crate
-    avg_temp = round(sum(temperature)/len(temperature),4)
-    min_temp = min(temperature)
-    max_temp = max(temperature)
-    avg_sal = round(sum(salinity)/len(salinity),4)
-    min_sal = min(salinity)
-    max_sal = max(salinity)
-    avg_dep = round(sum(depth)/len(depth),4)
-    min_dep = min(depth)
-    max_dep = max(depth)
-    # Add temperature values
-    add_quantitative_value(crate, "avgTemperature", avg_temp, "CEL", "Average Temperature", file_name)
-    add_quantitative_value(crate, "minTemperature", min_temp, "CEL", "Minimum Temperature", file_name)
-    add_quantitative_value(crate, "maxTemperature", max_temp, "CEL", "Maximum Temperature", file_name)
-    # Add salinity values
-    add_quantitative_value(crate, "avgSalinity", avg_sal, "NX", "Average Salinity", file_name)
-    add_quantitative_value(crate, "minSalinity", min_sal, "NX", "Minimum Salinity", file_name)
-    add_quantitative_value(crate, "maxSalinity", max_sal, "NX", "Maximum Salinity", file_name)
-    # Add depth values
-    add_quantitative_value(crate, "avgDepth", avg_dep, "MMT", "Average Depth", file_name)
-    add_quantitative_value(crate, "minDepth", min_dep, "MMT", "Minimum Depth", file_name)
-    add_quantitative_value(crate, "maxDepth", max_dep, "MMT", "Maximum Depth", file_name)
+    if len(temperature) > 0:
+        avg_temp = round(sum(temperature)/len(temperature),4)
+        min_temp = min(temperature)
+        max_temp = max(temperature)
+        # Add temperature values
+        add_quantitative_value(crate, "avgTemperature", avg_temp, "CEL", "Average Temperature", file_name)
+        add_quantitative_value(crate, "minTemperature", min_temp, "CEL", "Minimum Temperature", file_name)
+        add_quantitative_value(crate, "maxTemperature", max_temp, "CEL", "Maximum Temperature", file_name)
+    if len(salinity) > 0:
+        avg_sal = round(sum(salinity)/len(salinity),4)
+        min_sal = min(salinity)
+        max_sal = max(salinity)
+        # Add salinity values
+        add_quantitative_value(crate, "avgSalinity", avg_sal, "NX", "Average Salinity", file_name)
+        add_quantitative_value(crate, "minSalinity", min_sal, "NX", "Minimum Salinity", file_name)
+        add_quantitative_value(crate, "maxSalinity", max_sal, "NX", "Maximum Salinity", file_name)
+    if len(depth) > 0:
+        avg_dep = round(sum(depth)/len(depth),4)
+        min_dep = min(depth)
+        max_dep = max(depth)
+        # Add depth values
+        add_quantitative_value(crate, "avgDepth", avg_dep, "MMT", "Average Depth", file_name)
+        add_quantitative_value(crate, "minDepth", min_dep, "MMT", "Minimum Depth", file_name)
+        add_quantitative_value(crate, "maxDepth", max_dep, "MMT", "Maximum Depth", file_name)
 
     #Add location
     add_location(crate, "_:b0", PLACE_LOCATIONS[location_name], LAT_LONG[location_name][0], LAT_LONG[location_name][1], location_name)
@@ -238,6 +241,7 @@ def create_monthly_ro_crate(temperature,salinity,depth,file_name, location_name,
     #preview.write(file_name) # Write that preview out to the same folder
 
 def get_location_code(filename):
+    print("Looking for location name in: ", filename)
     for name, code in PLACE_CODES.items():
         if name.lower() in filename.lower():
             return code
@@ -272,23 +276,26 @@ def process_sheet(sheet, raw_status, location_code):
             # If this is our first row, set the start values
             if start_month is None:
                 start_row = row[0].row
-                date = parser.parse(row[headers.index("MeasurementTime")].value)
-                if (date is not None):
-                    start_month = date.strftime("%B")
-                    start_year = date.year
+                if row[headers.index("MeasurementTime")].value is not None:
+                    date = parser.parse(row[headers.index("MeasurementTime")].value)
+                    if (date is not None):
+                        start_month = date.strftime("%B")
+                        start_year = date.year
             # Otherwise we want to check if we've moved to a different month yet
             else:
-                date = parser.parse(row[headers.index("MeasurementTime")].value)
-                # If it is a separate month, save the previous rows
-                if date.strftime("%B") != start_month:
-                    end_month = date.strftime("%B")
-                    end_year = date.year
-                    end_row = row[0].row - 1
-                    print("Saving rows: ",start_row, " to ", end_row)
-                    file_name = get_file_name(raw_status, location_code + "_01", str(start_month), str(start_year), str(end_month), str(end_year))
-                    print("in file: ", file_name + ".csv")
-                    save_csv_file(sheet,headers,start_row,end_row, file_name)
-                    value_dict[file_name] = {"salinity":salinity, "temperature":temperature,"depth":depth,"start_month":start_month,"start_year":start_year}
+                # Double check that there is a  value then parse it
+                if row[headers.index("MeasurementTime")].value is not None:
+                    date = parser.parse(row[headers.index("MeasurementTime")].value)
+                    # If it is a separate month, save the previous rows
+                    if date.strftime("%B") != start_month:
+                        end_month = date.strftime("%B")
+                        end_year = date.year
+                        end_row = row[0].row - 1
+                        print("Saving rows: ",start_row, " to ", end_row)
+                        file_name = get_file_name(raw_status, location_code + "_01", str(start_month), str(start_year), str(end_month), str(end_year))
+                        print("in file: ", file_name + ".csv")
+                        save_csv_file(sheet,headers,start_row,end_row, file_name)
+                        value_dict[file_name] = {"salinity":salinity, "temperature":temperature,"depth":depth,"start_month":start_month,"start_year":start_year}
 
 
 
