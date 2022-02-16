@@ -9,7 +9,8 @@
     "logo": "images/logo.svg",
     "menu": [
       "help",
-      "about"
+      "about",
+      "citation"
     ]
   },
   "footer": {
@@ -32,42 +33,60 @@
     },
     "help": {
       "title": "Help",
-      "text": "<p>Welcome to the <em>Library of Successful Grants</em>. Please see the <a href=\"/#page/privacy\">Privacy Statement</a> for important information about the conditions of use.</p><p>You can focus on a particular funding round, year, faculty/school/department, lead investigator, keyword or FOR code by clicking on one of the links to the left.</p><p>With the exception of Funder and Year, this column only shows the top five or ten results in a facet. To brows all of the values for a facet, click one of the following links (or the 'all...' link in any of the facet panes):</p><ul><li><a href=\"/#search/0/1/showFacet=Dataset_funder_facetmulti\">Funder</a></li><li><a href=\"/#search/0/1/showFacet=Dataset_dateCreated_facetmulti\">Year</a></li><li><a href=\"/#search/0/1/showFacet=Dataset_affiliation_facetmulti\">School/Dept</a></li><li><a href=\"/#search/0/1/showFacet=Dataset_lead_facet\">Lead investigator</a></li><li><a href=\"/#search/0/1/showFacet=Dataset_keywords_facetmulti\">Keywords</a></li><li><a href=\"/#search/0/1/showFacet=Dataset_FOR_facetmulti\">FOR codes</a></li></ul><p>You can search the full text of grants by entering terms in the search box beneath the menu bar.</p><p>When you click on a facet value, it will appear as a search filter beneath the search box, and clicking multiple facet values will add to the filter list. The filter list will be applied to text search results. To remove a filter, click the 'x' which appears in the tag.</p><p>For technical support, contact <a href=\"mailto:eResearch-it@uts.edu.au\">eResearch Support Group</a>.</p>"
+      "text": "<p>Welcome to the <em>Estuary Salinity Data Portal</em>.</p><p>You can focus on a particular location, year, or month by clicking on one of the links to the left.</p><p>This column only shows the top five or results in a facet. To browse all of the values for a facet, click the 'all...' link in any of the facet panes<p>You can also search names by entering terms in the search box beneath the menu bar.</p><p>When you click on a facet value, it will appear as a search filter beneath the search box, and clicking multiple facet values will add to the filter list. The filter list will be applied to text search results. To remove a filter, click the 'x' which appears in the tag.</p><p>For technical support, contact <a href=\"mailto:eResearch-it@uts.edu.au\">eResearch Support Group</a>.</p>"
+    },
+    "citation": {
+       "title": "Citation",
+       "text":"<p> When using data from the Australian Shellfish Transformation Project Data Portal please acknowledge the University of Technology Sydney, NSW Department of Primary Industries (DPI), The Yield, Hunter Local Land Services and the NSW Oyster Farmers.</p> <br><p>This data was supported by funding from Food Agility CRC Ltd, funded under the Commonwealth Government CRC Program. The CRC Program supports industry-led collaborations between industry, researchers and the community.</p>"
     }
   },
-  "facets": {
-  },
+  "facets": {},
   "results": {
     "sort": [
       {
-        "field": "datePublished",
+        "field": "year",
         "order": "desc"
       }
     ],
-    "searchFacets": [
-    ],
-    "resultFacets": [
-    ],
+    "searchFacets": [],
+    "resultFacets": [],
     "view": {
       "Dataset": {
         "summaryFields": [
           {
-            "label": "Date",
-            "field": "datePublished"
+            "label": "Year",
+            "field": "year"
           },
-	  {
-	    "label": "Name",
-	    "field": "name"
-	  }
+          {
+            "label": "Month",
+            "field": "month"
+          },
+          {
+            "label": "Name",
+            "field": "name"
+          }
         ],
         "viewFields": [
           {
             "field": "description"
-   	  },
-	  {
-	    "label": "License",
-	    "field": "license"
-	  }
+          },
+          {
+			  "label": "Date Published",
+			  "field": "datePublished"
+		  },
+		  {
+			  "label": "Max Temperature",
+			  "field": "maxTemperature"
+		  },
+          {
+            "label": "License",
+            "field": "license"
+          },
+		  {
+			  "label": "Image",
+			  "field": "image",
+			  "display": "SubDocImage"
+		  }
         ],
         "viewLinks": true
       }

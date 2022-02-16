@@ -3,23 +3,10 @@
 Get latest version of oni-express
 
 ```shell script
-git clone -b release-1.2.0.rc1 https://github.com/UTS-eResearch/oni-express.git
+git clone -b release-1.2.1.rc1 https://github.com/UTS-eResearch/oni-express
 ```
 
 This will generate a folder oni-express
-
-Get the latest version of oni-indexer
-
-```shell script
-git clone -b release-1.2.0.rc1 https://github.com/UTS-eResearch/oni-indexer.git
-```
-
-```
-.../oni-express
-.../oni-indexer
-
-    ** It is crucial that these two repo's are sibling folders.
-```
 
 Change directories to oni-express. This will be the main working directory of an ONI
 
@@ -40,6 +27,11 @@ Run docker-compose
 
 ```shell script
 docker-compose up
+```
+
+Start the indexing process
+```shell script
+curl localhost:8080/config/index/run --header "Authorization: Bearer theseafoodtoken"
 ```
 
 Stop Docker
