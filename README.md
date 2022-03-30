@@ -47,7 +47,9 @@ Directories:
 * templates:
    python templates for generating datasets
 * sample-config: Stores configuration files for ONI (should be copied into oni-express folder)
-
+* api_calls:
+  stores the code, api keys and data fetched from the various APIs that provide sensor data
+  
 The following directories will be created by the program:   
 * sensor-data:
    Stores example RO-Crates
