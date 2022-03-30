@@ -23,10 +23,32 @@ from dateutil import parser # For handling ISO 8601 strings
 MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 MONTH_NUMBERS = {"January":"01","February":"02","March":"03","April":"04","May":"05","June":"06","July":"07","August":"08","September":"09","October":"10","November":"11","December":"12"}
 YEARS = ["2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020"]
-PLACES = ["Camden Haven","Clyde River","Georges River","Hawkesbury River","Hastings River","Manning River","Pambula Lake","Pambula Lake","Port Stephens","Shoalhaven-Crookhaven River","Wagonga Inlet","Wallis Lake","Wonboyn Lake","Wapengo Lake"]
-PLACE_CODES = {"Camden Haven":"CH","Clyde River":"CLY","Georges River":"GR","Hawkesbury River":"HR","Hastings River":"HS","Manning River":"Man","Pambula Lake - downstream":"PAM_02", "Pambula Lake - upstream":"PAM","Port Stephens":"PS","Shoalhaven-Crookhaven River":"SH","Wagonga Inlet":"WAG","Wallis Lake":"WAL","Wonboyn Lake":"WON","Wapengo Lake":"WPG"}
-PLACE_LOCATIONS = {"Camden Haven":"https://sws.geonames.org/8210175/","Clyde River":"https://sws.geonames.org/2171249/","Georges River":"https://sws.geonames.org/2205884/","Hawkesbury River":"https://sws.geonames.org/2205605/","Hastings River":"https://sws.geonames.org/2163834/","Manning River":"https://sws.geonames.org/2158850/","Pambula Lake - upstream":"https://sws.geonames.org/8594508/","Pambula Lake - downstream":"https://sws.geonames.org/8594508/","Port Stephens":"https://sws.geonames.org/9409163/","Shoalhaven-Crookhaven River":"https://sws.geonames.org/2149595/","Wagonga Inlet":"https://sws.geonames.org/2207090/","Wallis Lake":"https://sws.geonames.org/8539070/","Wonboyn Lake":"https://sws.geonames.org/8210771/","Wapengo Lake":"https://sws.geonames.org/8594517/"}
-LAT_LONG = {"Camden Haven":["-31.64478","152.82822"],"Clyde River":["-35.70093","150.13341"],"Georges River":["-34.02245","151.176"],"Hawkesbury River":["-33.5443","151.1365167"],"Hastings River":["-31.40406","152.89172"],"Manning River":["-31.89088","152.63981"],"Pambula Lake - downstream":["-36.96811903","149.884795"],"Pambula Lake - upstream":["-36.96811903","149.884795"],"Port Stephens":["-32.7196","152.06093"],"Shoalhaven-Crookhaven River":["-34.9118","150.74158"],"Wagonga Inlet":["-36.22161","150.07128"],"Wallis Lake":["-32.18268","152.47556"],"Wonboyn Lake":["-37.24121","149.92724"],"Wapengo Lake":["-36.60182","150.01678"]}
+PLACES = [
+    "Camden Haven","Clyde River","Georges River","Hawkesbury River","Hastings River","Manning River","Oyster Harbour","Pambula Lake",
+    "Pambula Lake","Port Stephens","Shoalhaven-Crookhaven River","Wagonga Inlet","Wallis Lake","Wonboyn Lake","Wapengo Lake"
+    ]
+PLACE_CODES = {
+    "Camden Haven":"CH","Clyde River":"CLY","Georges River":"GR","Hawkesbury River":"HR","Hastings River":"HS","Manning River":"Man","Pambula Lake - downstream":"PAM_02",
+    "Pambula Lake - upstream":"PAM","Port Stephens":"PS","Shoalhaven-Crookhaven River":"SH","Wagonga Inlet":"WAG","Wallis Lake":"WAL","Wonboyn Lake":"WON","Wapengo Lake":"WPG",
+    "Oyster Harbour North":"WA_A1B","Oyster Harbour Central":"WA_A2","Oyster Harbour East":"WA_A3","Oyster Harbour East":"WA_A3B","Oyster Harbour South":"WA_A4"
+    }
+PLACE_LOCATIONS = {
+    "Camden Haven":"https://sws.geonames.org/8210175/","Clyde River":"https://sws.geonames.org/2171249/","Georges River":"https://sws.geonames.org/2205884/",
+    "Hawkesbury River":"https://sws.geonames.org/2205605/","Hastings River":"https://sws.geonames.org/2163834/","Manning River":"https://sws.geonames.org/2158850/",
+    "Pambula Lake - upstream":"https://sws.geonames.org/8594508/","Pambula Lake - downstream":"https://sws.geonames.org/8594508/",
+    "Port Stephens":"https://sws.geonames.org/9409163/","Shoalhaven-Crookhaven River":"https://sws.geonames.org/2149595/","Wagonga Inlet":"https://sws.geonames.org/2207090/",
+    "Wallis Lake":"https://sws.geonames.org/8539070/","Wonboyn Lake":"https://sws.geonames.org/8210771/","Wapengo Lake":"https://sws.geonames.org/8594517/",
+    "Oyster Harbour North":"https://sws.geonames.org/2064011/", "Oyster Harbour Central":"https://sws.geonames.org/2064011/", "Oyster Harbour East":"https://sws.geonames.org/2064011/",
+    "Oyster Harbour South":"https://sws.geonames.org/2064011/"
+    }
+LAT_LONG = {
+    "Camden Haven":["-31.64478","152.82822"],"Clyde River":["-35.70093","150.13341"],"Georges River":["-34.02245","151.176"],"Hawkesbury River":["-33.5443","151.1365167"],
+    "Hastings River":["-31.40406","152.89172"],"Manning River":["-31.89088","152.63981"],"Pambula Lake - downstream":["-36.96811903","149.884795"],
+    "Pambula Lake - upstream":["-36.96811903","149.884795"],"Port Stephens":["-32.7196","152.06093"],"Shoalhaven-Crookhaven River":["-34.9118","150.74158"],
+    "Wagonga Inlet":["-36.22161","150.07128"],"Wallis Lake":["-32.18268","152.47556"],"Wonboyn Lake":["-37.24121","149.92724"],"Wapengo Lake":["-36.60182","150.01678"],
+    "Oyster Harbour North":["-34.964233", "117.955450"],"Oyster Harbour Central":["-34.973600", "117.959117"], "Oyster Harbour East":["-34.972117", "117.969433"],
+    "Oyster Harbour South":["-34.986217","117.956850"]
+    }
 AUTHORS = [{
     "name":"Penelope Ajani",
     "email": "Penelope.Ajani@uts.edu.au",
@@ -167,6 +189,7 @@ def package_data(crate,temperature,salinity,depth,location_name, month, year, fi
     crate.image = file_name + ".png"
     ## Calculate the min, max and avg values, and add to the dataset in the crate
     if len(temperature) > 0:
+        #print(temperature)
         avg_temp = round(sum(temperature)/len(temperature),4)
         min_temp = min(temperature)
         max_temp = max(temperature)
@@ -228,11 +251,11 @@ def plot_three_datas(salinity, temperature, depth, file_name):
     plt.savefig(file_name + ".png")
     plt.clf()
 
-def create_monthly_ro_crate(temperature,salinity,depth,file_name, location_name, month, year, csv_files):
+def create_monthly_ro_crate(temperature,salinity,depth,file_name, location_name, month, year, csv_files, filepath=NEW_CSV_FILE_FOLDER):
     crate = ROCrate(gen_preview=False) # Don't generate a preview, since we'll do that using https://github.com/UTS-eResearch/ro-crate-excel
     crate.name = 'Sensor readings from ' + location_name + " in " + month + " " + str(year)
     for csv_file in csv_files:
-        file_entity = crate.add_file(os.path.join(NEW_CSV_FILE_FOLDER,csv_file + ".csv")) # Adds the file reference to the crate, and will cause it to be saved next to it when written to disk
+        file_entity = crate.add_file(os.path.join(filepath,csv_file + ".csv")) # Adds the file reference to the crate, and will cause it to be saved next to it when written to disk
     package_data(crate,temperature,salinity,depth,location_name, month, year, csv_files[-1], file_entity) # Should use working csv file name (csv_files[-1]), since it needs the full .csv reference
     crate.write_crate(file_name)
     os.system('xlro -j ' + file_name)
@@ -240,14 +263,24 @@ def create_monthly_ro_crate(temperature,salinity,depth,file_name, location_name,
     #preview = Preview(crate) # Create a preview of the crate
     #preview.write(file_name) # Write that preview out to the same folder
 
-def get_location_code(filename):
+def get_location_code_by_name(filename):
     print("Looking for location name in: ", filename)
     for name, code in PLACE_CODES.items():
         if name.lower() in filename.lower():
             return code
     return None
 
+def get_location_code_in_filename(filename):
+    print("Looking for location code in: ", filename)
+    for name, code in PLACE_CODES.items():
+        if code in filename:
+            return code
+    return None
+
 def get_location_name(location_code):
+    for name, code in PLACE_CODES.items():
+        if code in location_code:
+            return name
     for name, code in PLACE_CODES.items():
         if code.lower() in location_code.lower():
             return name
@@ -324,6 +357,73 @@ def process_sheet(sheet, raw_status, location_code):
     #create_monthly_ro_crate(temperature,salinity,depth, file_name, location_name, start_month, start_year)
     return value_dict
 
+def process_api_csv(csv_rows, raw_status="RAW", location_code=None, file_name=None):
+    value_dict = {}
+    header_row = True
+    headers = []
+    first_row= None
+    last_row = None
+    start_month = None
+    start_year = None
+    depth = []
+    temperature = []
+    salinity = []
+    # Need to record first row, and then last row of the month, in order to export data
+    for index, row in enumerate(csv_rows):
+        # Deal with the header row
+        if header_row:
+            #print(row)
+            header_row = False
+            for cell in row:
+                headers.append(cell)
+        else:
+            # If this is our first row, set the start values
+            if start_month is None:
+                start_row = 1
+                if row[headers.index("MeasurementTime")] is not None:
+                    date = parser.parse(row[headers.index("MeasurementTime")])
+                    if (date is not None):
+                        start_month = date.strftime("%B")
+                        start_year = date.year
+            # Otherwise we want to check if we've moved to a different month yet
+            else:
+                # Double check that there is a  value then parse it
+                if row[headers.index("MeasurementTime")] is not None:
+                    date = parser.parse(row[headers.index("MeasurementTime")])
+                    # If it is a separate month, save the previous rows
+                    if date.strftime("%B") != start_month:
+                        end_month = date.strftime("%B")
+                        end_year = date.year
+                        end_row = index
+                        print("Saving rows: ",start_row, " to ", end_row)
+                        if not file_name:
+                            file_name = get_file_name(raw_status, location_code + "_01", str(start_month), str(start_year), str(end_month), str(end_year))
+                            print("in file: ", file_name + ".csv")
+                            save_csv_file(sheet,headers,start_row,end_row, file_name)
+                        value_dict[file_name] = {"salinity":salinity, "temperature":temperature,"depth":depth,"start_month":start_month,"start_year":start_year}
+
+            # Record the various values for avg, mins and max
+            if row[headers.index("Type")] == "temperature":
+                temperature.append(float(row[headers.index("CurrentValue")]))
+                #print("Found temp", row[headers.index("Type")],float(row[headers.index("CurrentValue")]))
+            elif row[headers.index("Type")] == "depth":
+                depth.append(float(row[headers.index("CurrentValue")]))
+                #print("Found depth", row[headers.index("Type")],float(row[headers.index("CurrentValue")]))
+            elif row[headers.index("Type")] == "salinity":
+                salinity.append(float(row[headers.index("CurrentValue")]))
+                #print("Found salinity", row[headers.index("Type")],float(row[headers.index("CurrentValue")]))
+
+    # Handles final rows
+    #print("Salnity",salinity)
+    end_row = len(csv_rows) - 1
+    print("Saving rows: ",start_row, " to ", end_row)
+    csv_file_name = file_name
+    print("in file: ", csv_file_name + ".csv")
+    #save_csv_file(sheet,headers,start_row,end_row,csv_file_name)
+    value_dict[csv_file_name] = {"salinity":salinity, "temperature":temperature,"depth":depth,"start_month":start_month,"start_year":start_year}
+    #create_monthly_ro_crate(temperature,salinity,depth, file_name, location_name, start_month, start_year)
+    return value_dict
+
 def working_from_raw_filename(raw_filename):
     if "RAW" in raw_filename:
         working_filename = raw_filename.replace("RAW","WORKING")
@@ -345,9 +445,36 @@ def process_data(raw_sheet, working_sheet, location_code, location_name):
     #for csv_file_pair in csv_files:
     #    create_monthly_ro_crate(temperature,salinity,depth, file_name, location_name, start_month, start_year, csv_file_pair)
 
+def process_api_data(csv_file_path, csv_file_name):
+    location_code = get_location_code_in_filename(csv_file_name)
+    print("Location Code: ",location_code)
+    location_name = get_location_name(location_code)
+    csv_rows = []
+    with open(os.path.join(csv_file_path,csv_file_name),'r') as file:
+        reader = csv.reader(file, delimiter=',')
+        for row in reader:
+            csv_rows.append(row)
+    value_dict = process_api_csv(csv_rows,file_name=csv_file_name)
+
+    for key, values in value_dict.items():
+        #print("key",key)
+        #print("val",values)
+        #print("salinity",values["salinity"])
+        plain_filename = key.removesuffix(".csv")
+        # for k,v in values.items():
+        #     print(k)
+        create_monthly_ro_crate(values["temperature"],values["salinity"],values["depth"],plain_filename,location_name,values["start_month"],values["start_year"],[plain_filename],csv_file_path)
+
+def load_api_data_from_folder(filepath):
+    directory = os.path.join(os.getcwd(),filepath)
+    print("Loading files in: ", directory)
+    for file in os.listdir(directory):
+        if os.path.isfile(os.path.join(directory,file)) and ".csv" in file:
+            location_name = get_location_name(file)
+            process_api_data(directory, file, location_name)
 
 def load_estuary_data(filepath):
-    location_code = get_location_code(filepath)
+    location_code = get_location_code_by_name(filepath)
     location_name = get_location_name(location_code) # Why have one line, when you can have two
     print("Loading data from: ",os.path.join(os.getcwd(),filepath))
     workbook = openpyxl.load_workbook(filepath, read_only=True) # Read-only mode so that it doesn't take up too much memory
@@ -362,6 +489,8 @@ def load_estuary_data(filepath):
     working_sheet = workbook[working_sheet_name]
     process_data(raw_sheet, working_sheet, location_code, location_name)
 
-
     #print("Min/Max temperature: ",min(temperature), " / ", max(temperature))
     workbook.close() # Need to close since read-only uses "lazy loading"
+
+if __name__ == "__main__":
+    print("You're running this wrong, command line not implemented yet")
