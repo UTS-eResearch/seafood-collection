@@ -58,6 +58,11 @@ def get_lat_lon_from_sensor_name(sensor_name):
             return lat_lon
     return None
 
+def get_location_from_sensor_name(sensor_name):
+    for sensor_id, location_name in locations.items():
+        if sensor_id in sensor_name:
+            return location_name
+
 def parse_month_year(month, year):
     if int(month) in range(1,13):
         if int(year) in range(1970,2100):
@@ -161,47 +166,60 @@ def get_multiple_readings(start_date, end_date, device_list, location_name): # E
     readings_list = join_readings(location_name, HEADERS,results_dict.get("temp"),results_dict.get("salinity"),results_dict.get("water_level"),results_dict.get("amb_temp"),results_dict.get("rainfall"),results_dict.get("pH"),results_dict.get("DO"))
     return readings_list
 
+def build_row(header_row, time_value_row, sensor_name, endpoint, units, reading_type):
+    indexes = {}
+    result_row = []
+    indexes[header_row.index("id")] = uuid.uuid4().int
+    indexes[header_row.index("MeasurementTime")] = time_value_row[0]
+    indexes[header_row.index("SensorName")] = sensor_name
+    indexes[header_row.index("SensorDescription")] = get_location_from_sensor_name(sensor_name)
+    indexes[header_row.index("SensorDetails")] = endpoint
+    indexes[header_row.index("Type")] = reading_type
+    indexes[header_row.index("Units")] = units
+    #print(units)
+    indexes[header_row.index("CurrentValue")] = time_value_row[1]
+    (lat, lon) = get_lat_lon_from_sensor_name(sensor_name)
+    indexes[header_row.index("Lat")] = lat
+    indexes[header_row.index("Long")] = lon
+    new_dict = dict(sorted(indexes.items()))
+    for index, value in new_dict.items():
+        result_row.insert(index,value)
+    return result_row
+
 
 def join_readings(location_name, header_row, temp, salinity, water_level, amb_temp=None, rainfall=None, pH=None, DO=None):
     # Need to add all of them, sort by date_time, and then spit it all out in a CSV
     readings_matrix = []
     if temp:
         for row in temp[3:]:
-            (lat, lon) = get_lat_lon_from_sensor_name(temp[1][1])
-            temp_row = [uuid.uuid4().int,row[0],temp[1][1],location_name,get_device_endpoint(temp[0][1]),"temperature",temp[2][1],row[1],lat,lon]
-            readings_matrix.append(temp_row)
+            new_row = build_row(HEADERS, row, temp[1][1], get_device_endpoint(temp[0][1]), temp[2][1], "temperature")
+            readings_matrix.append(new_row)
 
     if salinity:
         for row in salinity[3:]:
-            (lat, lon) = get_lat_lon_from_sensor_name(salinity[1][1])
-            salinity_row = [uuid.uuid4().int,row[0],salinity[1][1],location_name,get_device_endpoint(salinity[0][1]),"salinity",salinity[2][1],row[1],lat,lon]
-            readings_matrix.append(salinity_row)
+            new_row = build_row(HEADERS, row, salinity[1][1], get_device_endpoint(salinity[0][1]), salinity[2][1], "salinity")
+            readings_matrix.append(new_row)
     if water_level:
         for row in water_level[3:]:
-            print(water_level[1])
-            (lat, lon) = get_lat_lon_from_sensor_name(water_level[1][1])
-            water_level_row = [uuid.uuid4().int,row[0],water_level[1][1],location_name,get_device_endpoint(water_level[0][1]),"depth",water_level[2][1],row[1],lat,lon]
-            readings_matrix.append(water_level_row)
+            #print(water_level[1])
+            new_row = build_row(HEADERS, row, water_level[1][1], get_device_endpoint(water_level[0][1]), water_level[2][1], "depth")
+            readings_matrix.append(new_row)
     if amb_temp:
         for row in amb_temp[3:]:
-            (lat, lon) = get_lat_lon_from_sensor_name(amb_temp[1][1])
-            amb_temp_row = [uuid.uuid4().int,row[0],amb_temp[1][1],location_name,get_device_endpoint(amb_temp[0][1]),"air temperature",amb_temp[2][1],row[1],lat,lon]
-            readings_matrix.append(amb_temp_row)
+            new_row = build_row(HEADERS, row, amb_temp[1][1], get_device_endpoint(amb_temp[0][1]), amb_temp[2][1], "air temperature")
+            readings_matrix.append(new_row)
     if rainfall:
         for row in rainfall[3:]:
-            (lat, lon) = get_lat_lon_from_sensor_name(rainfall[1][1])
-            rainfall_row = [uuid.uuid4().int,row[0],rainfall[1][1],location_name,get_device_endpoint(rainfall[0][1]),"rainfall 24hrs",rainfall[2][1],row[1],lat,lon]
-            readings_matrix.append(rainfall_row)
+            new_row = build_row(HEADERS, row, rainfall[1][1], get_device_endpoint(rainfall[0][1]), rainfall[2][1], "rainfall 24hrs")
+            readings_matrix.append(new_row)
     if pH:
         for row in pH[3:]:
-            (lat, lon) = get_lat_lon_from_sensor_name(pH[1][1])
-            pH_row = [uuid.uuid4().int,row[0],pH[1][1],location_name,get_device_endpoint(pH[0][1]),"pH",pH[2][1],row[1],lat,lon]
-            readings_matrix.append(pH_row)
+            new_row = build_row(HEADERS, row, pH[1][1], get_device_endpoint(pH[0][1]), pH[2][1], "pH")
+            readings_matrix.append(new_row)
     if DO:
         for row in DO[3:]:
-            (lat, lon) = get_lat_lon_from_sensor_name(DO[1][1])
-            DO_row = [uuid.uuid4().int,row[0],DO[1][1],location_name,get_device_endpoint(DO[0][1]),"DO",DO[2][1],row[1],lat,lon]
-            readings_matrix.append(DO_row)
+            new_row = build_row(HEADERS, row, DO[1][1], get_device_endpoint(DO[0][1]), DO[2][1], "DO")
+            readings_matrix.append(new_row)
     readings_matrix = sorted(readings_matrix, key=lambda x:x[1])
     readings_matrix.insert(0,HEADERS)
     return readings_matrix
@@ -215,7 +233,7 @@ def write_months_readings_old(start_date,end_date):
         readings_matrix = readings_matrix[3:] # Remove header rows
         device_endpoint = get_device_endpoint(device_tuple[0])
         device_name = device_tuple[1]
-        with open(os.path.join(sub_folder,'out_' + device_name + "_" + start_date + "_" + end_date + '.csv'),'w') as file:
+        with open(os.path.join(sub_folder,'out_' + device_name + "_" + start_date + "_" + end_date + '.csv'),'w',encoding="cp1252") as file: # Was trying encodings to get of Â prepended to degree symbol in file
             #file.write('''Id,MeasurementTime,SensorName,SensorDescription,SensorDetails,Type,Units,CurrentValue,Lat,Long\n''')
             for row in header_rows:
                 file.write(','.join(str(col) for col in row))
