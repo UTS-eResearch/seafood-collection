@@ -9,6 +9,7 @@ from io import StringIO # For converting string to file object to use with CSV r
 import os
 import sys # For commandline usage
 import uuid # Since we need to do generate IDs for rows
+from dateutil import parser # For handling and formatting date strings
 
 #### Goal Headers: id, MeasurementTime, SensorName, SensorDescription [location name], SesnorDetails, Type, Units, CurrentValue, Lat, Long
 
@@ -27,7 +28,8 @@ locations = {
     "mncm2l30a": "Merimbula Lake",
     "mncm2l30b": "Pambula Lake",
     "mncm2l30c": "Pambula Lake",
-    "mncm2l30d": "Wonboyn Lake"
+    "mncm2l30d": "Wonboyn Lake",
+    "mncm2l30bc": "Pambula Lake"
 }
 
 sensor_lat_lons = {
@@ -43,7 +45,8 @@ sensor_lat_lons = {
     "mncm2l30a": (-36.896499,149.890421),
     "mncm2l30b": (-36.9652248,149.891757),
     "mncm2l30c": (-36.9652248,149.891757),
-    "mncm2l30d": (-37.24121,149.92724)
+    "mncm2l30d": (-37.24121,149.92724),
+    "mncm2l30bc": (-36.9652248,149.891757),
 }
 
 
@@ -233,7 +236,7 @@ def write_months_readings_old(start_date,end_date):
         readings_matrix = readings_matrix[3:] # Remove header rows
         device_endpoint = get_device_endpoint(device_tuple[0])
         device_name = device_tuple[1]
-        with open(os.path.join(sub_folder,'out_' + device_name + "_" + start_date + "_" + end_date + '.csv'),'w',encoding="cp1252") as file: # Was trying encodings to get of Â prepended to degree symbol in file
+        with open(os.path.join(sub_folder,'out_' + device_name + "_" + start_date + "_" + end_date + '.csv'),'w',encoding="utf-8-sig") as file: # Was trying encodings to get of Â prepended to degree symbol in file
             #file.write('''Id,MeasurementTime,SensorName,SensorDescription,SensorDetails,Type,Units,CurrentValue,Lat,Long\n''')
             for row in header_rows:
                 file.write(','.join(str(col) for col in row))
@@ -258,6 +261,34 @@ def list_sensors():
             print("  ","Sensor_type",name,"id",id)
 
 def write_months_readings(start_date,end_date):
+    start_date_list = start_date.split('-')
+    end_date_list = end_date.split('-')
+    start_year = start_date_list[0]
+    start_month = int(start_date_list[1])
+    end_year = int(end_date_list[0])
+    end_month = int(end_date_list[1])
+    year = int(start_year)
+    month = start_month
+    while year < end_year:
+        for incremented_month in range(int(month),12):
+            write_readings(parse_month_year(incremented_month,year),parse_month_year(incremented_month+1,year))
+        write_readings(parse_month_year(12,year),parse_month_year(1,year+1)) # Handling the year change
+        year = year + 1
+        month = 1
+    if (int(year) != int(start_year)): # i.e. Goes over the year break:
+        for incremented_month in range(1,end_month):
+            write_readings(parse_month_year(incremented_month, year),parse_month_year(incremented_month+1,year))
+    else:
+        for incremented_month in range(start_month,end_month):
+            write_readings(parse_month_year(incremented_month, year),parse_month_year(incremented_month+1,year))
+
+
+
+def write_readings(start_date,end_date):
+    start_year = str(parser.parse(start_date).year)
+    start_month = str(parser.parse(start_date).strftime("%B"))
+    end_year = str(parser.parse(end_date).year)
+    end_month = str(parser.parse(end_date).strftime("%B"))
     devices = get_devices()
     loc_devices = {}
     for sensor_code, loc_name in locations.items():
@@ -266,14 +297,16 @@ def write_months_readings(start_date,end_date):
         for sensor_code, loc in locations.items():
             if sensor_code in device_name:
                 loc_devices[sensor_code].append((device_id, device_name))
+
+    # Needed because pambula lake has both mncm2l30b and mncm2l30c
+    loc_devices["mncm2l30bc"] = loc_devices["mncm2l30b"] + loc_devices["mncm2l30c"]
+    loc_devices.pop("mncm2l30b")
+    loc_devices.pop("mncm2l30c")
+
     for key, val in loc_devices.items():
         print("Fetching device readings for ",locations[key])
         location_readings = get_multiple_readings(start_date, end_date, val, key)
         print("Writing CSV for: ", locations[key])
-        start_year = start_date.split("-")[0]
-        start_month = start_date.split("-")[1]
-        end_year = end_date.split("-")[0]
-        end_month = end_date.split("-")[1]
 
         with open(os.path.join(sub_folder,'out_NSW_' + key + "_" + start_month + start_year + "_" + end_month + end_year + "_RAW" + '.csv'),'w') as file:
             for row in location_readings:
@@ -311,5 +344,6 @@ if __name__ == "__main__":
         end_date = parse_month_year(sys.argv[4],sys.argv[3])
         print("Starting from", start_date)
         print("Ending at", end_date)
+
         write_months_readings(start_date,end_date)
         #join_readings()
