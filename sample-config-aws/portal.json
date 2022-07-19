@@ -8,13 +8,17 @@
     "URL": "/",
     "logo": "images/logo.svg",
     "menu": [
-      "help",
-      "about",
-      "citation"
+	  "project",  
+	  "help",
+      "citation",
+	  "acknowledgements",
+	  "publications",
+	  "map"
     ]
   },
+  "splash": "project",
   "footer": {
-    "text": "2021 University of Technology Sydney"
+    "text": "2022 University of Technology Sydney"
   },
   "search": {
     "error": "Search Error",
@@ -23,22 +27,34 @@
     "mainSearch": "main_search"
   },
   "pages": {
-    "about": {
-      "title": "About",
-      "text": "<p>This app was built by the UTS eResearch Support Group using Oni 👹 v1.2 - a platform for managing, indexing and searcing secure data repositories based on open standards for research object metadata - <a href=\"https://researchobject.github.io/ro-crate/\">RO-Crate</a> - and file-based repositories - <a href=\"https://ocfl.io/\">OCFL</a>.</p><p>If you'd like to use Oni to manage or publish your research data, please get in touch with us at <a href=\"mailto:eResearch-it@uts.edu.au\">eResearch-it@uts.edu.au</a>.</p>"
-    },
     "privacy": {
       "title": "Privacy",
       "text": "<h4>PURPOSE</h4><p>This document outlines the UTS approach to the secure storage and provision of access to the <em>UTS Library of Successful Grants</em>, as well as the responsibilities of UTS staff when accessing said library.</p><h4>OVERVIEW</h4><p>The Successful Grants Library contains external and some internal grant applications that were successfully funded at UTS. The <em>UTS Library of Successful Grants</em> is a resource used to assist UTS researchers in framing, structuring and developing their own grant applications.</p><h4>SCOPE</h4><p>The procedure applies to all UTS applicants who access the electronic <em>UTS Library of Successful Grants</em> and the researchers who consent for their grant to be included in the Library.</p><h4>PROCEDURE</h4><p>Successful ARC and NHMRC grant applications, and other selected funding applications will be made available within the electronic <em>Library of Successful Grants</em>.</p><h4>GRANT LIBRARY APPROVAL</h4><p>In giving approval for an application (whole or in part) to be included in the <em>UTS Library of Successful Grants</em>, the lead investigator is acting on behalf of all named participants on the application in question.</p><p>The lead investigator can request that particular sections of their grant application are not made available in the <em>Library of Successful Grants</em> by contacting the Strategic Grants Development Team.</p><p>The lead investigator can request the removal of their grant from the <em>UTS Library of Successful Grants</em> at any time by contacting the Strategic Grants Development Team.</p><h4>CONDITIONS OF ACCESSING SUCCESSFUL GRANTS LIBRARY</h4><p>Applications included in the <em>UTS Library of Successful Grants</em> have been contributed by researchers to provide examples of successful grants for reference by UTS researchers when developing their own grant applications. General notes may be taken to assist in the framing, development and layout of proposals.</p><p>In accessing the library, staff are agreeing not to copy or share the contents of the library in any way.</p><h4>ACCESSING SUCCESSFUL GRANTS LIBRARY</h4><p>The <em>UTS Library of Successful Grants</em> can be accessed electronically by UTS staff using their staff ID via Staff Connect.</p><h4>COMPLIANCE AND BREACHES</h4><p>RIO may suspend access to the <em>UTS Library of Successful Grants</em> if any person breaches this procedure.</p>"
     },
     "help": {
       "title": "Help",
-      "text": "<p>Welcome to the <em>Estuary Salinity Data Portal</em>.</p><p>You can focus on a particular location, year, or month by clicking on one of the links to the left.</p><p>This column only shows the top five or results in a facet. To browse all of the values for a facet, click the 'all...' link in any of the facet panes<p>You can also search names by entering terms in the search box beneath the menu bar.</p><p>When you click on a facet value, it will appear as a search filter beneath the search box, and clicking multiple facet values will add to the filter list. The filter list will be applied to text search results. To remove a filter, click the 'x' which appears in the tag.</p><p>For technical support, contact <a href=\"mailto:eResearch-it@uts.edu.au\">eResearch Support Group</a>.</p>"
+      "text": "<p>Welcome to the <em>Estuary Salinity Data Portal</em>.</p><p>You can focus on a particular location, year, or month by clicking on one of the links to the left.</p><p>This column only shows the top five or results in a facet. To browse all of the values for a facet, click the 'all...' link in any of the facet panes<p>You can also search names by entering terms in the search box beneath the menu bar.</p><p>When you click on a facet value, it will appear as a search filter beneath the search box, and clicking multiple facet values will add to the filter list. The filter list will be applied to text search results. To remove a filter, click the 'x' which appears in the tag.</p><p>For technical support, contact <a href='mailto:eResearch-it@uts.edu.au'>eResearch Support Group</a>.</p><br><h2>About</h2><p>This app was built by the UTS eResearch Support Group using Oni 👹 v1.2 - a platform for managing, indexing and searcing secure data repositories based on open standards for research object metadata - <a href='https://researchobject.github.io/ro-crate/'>RO-Crate</a> - and file-based repositories - <a href='https://ocfl.io/'>OCFL</a>.</p><p>If you'd like to use Oni to manage or publish your research data, please get in touch with us at <a href='mailto:eResearch-it@uts.edu.au'>eResearch-it@uts.edu.au</a>.</p>"
     },
     "citation": {
        "title": "Citation",
        "text":"<p> When using data from the Australian Shellfish Transformation Project Data Portal please acknowledge the University of Technology Sydney, NSW Department of Primary Industries (DPI), The Yield, Hunter Local Land Services and the NSW Oyster Farmers.</p> <br><p>This data was supported by funding from Food Agility CRC Ltd, funded under the Commonwealth Government CRC Program. The CRC Program supports industry-led collaborations between industry, researchers and the community.</p>"
-    }
+    },
+	"project": {
+		"title": "Project Overview",
+		"text":"<p>The <em>Transforming Australian Shellfish Production Project</em> (TASPP) follows on from the success of the NSW Oyster Industry Transformation Project (NSWOITP), which is a UTS led, multidisciplinary collaboration between oyster farmers (NSW Farmers Association), researchers (UTS, DPI Aquaculture and Fisheries), regulators (DPI Biosecurity and Food Safety) and the Food Agility CRC. Hunter Local Land Services (LLS) has been an important partner in the Manning, Wallis Lake and Port Stephens estuaries, funding the installation of hardware in the Manning and working in partnership with MidCoast Council to improve catchment management and reduce water quality impacts on the oyster industry. The project uses real time, high-resolution salinity, temperature and depth sensing, combined with novel molecular genetic methods (eDNA), to model oyster food safety, pathogenic bacteria, harmful algae, and oyster growth and disease, with the aim of changing harvest management and to reduce harvest closure days for farmers.</p> <br><p>As filter feeders, shellfish like oysters and mussels actively remove particles from surrounding waterways. Following high-risk events such as heavy rainfall or harmful algal blooms, regulators like the NSW Food Authority implement precautionary harvest area closures to manage potential food safety risks or implement shellfish movement restrictions to manage potential biosecurity risks. <br>Shellfish farmers in Australia are not currently able to predict the likelihood of a harvest area closure due to these high-risk events. If farmers were aware of imminent closure, they could take meaningful action such as harvesting early, or moving stock to lower risk areas of their lease. The same environmental variables that influence food safety can also impact on oysters' health and can increase the risk of certain diseases. Understanding these relationships and monitoring these variables could be used to reduce the risk and severity of disease outbreaks.</p> <br><p>This project will deliver functioning, estuary-specific models relating to oyster growth, disease risk, harmful algal bloom risk, sources of contamination, and other supporting factors influencing industry productivity. Each of these models will relate biological data to high frequency water quality metrics as measured by real-time sensors deployed in situ.</p> <br><p>Stage 1 (2018-2021) of the program has been successfully completed, with ~5000 water and 3000 oyster samples collected across 13 NSW estuaries engaged in the project. Stage 2 (2021-2024) is now underway, with two further NSW estuaries engaged, and expansion of the project into Western Australia. Sample processing, data analysis and report writing will continue during this second phase, with modelling to predict oyster growth and mortality rates, including key oyster diseases such as Marteilia sydneyi (QX), and Winter Mortality, and the intensity of harmful algal blooms planned. As part of these analyses, novel qPCR assays for E. coli (bird, cow, human) and harmful algal species (Pseudo-nitzschia spp., Dinophysis spp., P. minimum), which were developed during Phase 1, will also be implemented.</p> <br><p>Preliminary results from this high frequency data have already demonstrated the link between salinity levels related to rainfall and E. coli levels. In 2019, the NSW Shellfish Program's Annual Sanitary Survey Report (DPI) stated that using this real-time, high frequency environmental data,  the CRC project provided the basis for a change to the management plans for the Pambula Lake harvest area and the Cromarty's Bay harvest area (Port Stephens). These management plan changes mean that harvest area openings and closures can be based on salinity-only data, with unnecessary extra harvest closure days avoided. As early adopters of the technology for harvest area management, an independent economic assessment by NSW DPI completed in January 2021 evaluated Pambula Lake and Cromarty's Bay. The report highlighted the positive benefits for industry through using salinity-based management plans. Focusing on the six-month period where oysters were at peak marketable condition, it was estimated that up to two extra weeks of harvest could be achieved, with a projected annual net profit boost of $15,344 (Cromarty's Bay) and $95,736 (Pambula Lake) for the study areas, based on current lease area used. The full report is available on the NSW Food Authority website.</p> <br><p>Across the NSW shellfish industry, the potential economic benefit from the use of real-time sensors for harvest area management is conservatively estimated at up to $3 million annual farm gate value. Increased revenue will improve the confidence of the industry to further invest and drive more growth. As of February 2022, thirteen salinity-only management plans had been offered for harvest areas in participating NSW estuaries, of which six were taken up and seven are under consideration.</p><br><p> More information can be found on the <a href='https://www.foodagility.com/research/transforming-australian-shellfish-production'>food agility website</a>.</p>"
+	},
+	"acknowledgements": {
+		"title": "Acknowledgements",
+		"text": "<p>This project is proudly funded by the NSW Government in association with the Food Agility CRC and the NSW Farmer's Association. The Food Agility CRC Ltd is funded under the Commonwealth Government CRC Program. The CRC Program supports industry-led collaborations between industry, researchers and the community. The Department of Primary Industries, the University of Technology and NSW Farmers also provided project funding. The project team would like to acknowledge the invaluable assistance of oyster farmers for hosting sensors and collecting samples, and staff from The Yield Technology Solutions, ICT International and In Situ Marine Optics for sensor installation and maintenance.</p>"
+	},
+	"publications": {
+		"title": "Publications",
+		"text": "<h2>By Project Team</h2><br><ul><li><a href='https://opus.lib.uts.edu.au/handle/10453/158261'>Transforming Australian Shellfish Production: Pelican Point Harvest Area - Manning River. Report on Stage 1, December 2017-March 2021.</a></li></ul><br><h2>By others</h2>"
+	},
+	"map": {
+		"title": "Map",
+		"text": "<p>Map to be provided</p>"
+	}
   },
   "facets": {},
   "results": {
@@ -71,22 +87,21 @@
             "field": "description"
           },
           {
-			  "label": "Date Published",
-			  "field": "datePublished"
-		  },
-		  {
-			  "label": "Max Temperature",
-			  "field": "maxTemperature"
-		  },
+	    "label": "Date Published",
+	    "field": "datePublished"
+	  },
+	  {
+	    "label": "Max Temperature",
+            "field": "maxTemperature"
+	  },
           {
             "label": "License",
             "field": "license"
           },
-		  {
-			  "label": "Image",
-			  "field": "image",
-			  "display": "SubDocImage"
-		  }
+	  {
+	    "label": "Test",
+	    "field": "avgSalinity"
+          }
         ],
         "viewLinks": true
       }
