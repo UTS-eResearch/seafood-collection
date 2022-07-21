@@ -69,6 +69,7 @@ def get_device_endpoint(device_id):
 def get_historical_readings(device_id, start_date, end_date):
     readings_matrix = []
     query_params = [("date_from",start_date),("date_to",end_date),("format","csv")]
+    print("Getting readings from ", device_id, ", start date: ", start_date, ", end date: ", end_date)
     endpoint = get_device_endpoint(device_id)
     readings_string = api_get(endpoint, query_params)
     csv_file = StringIO(readings_string)
@@ -126,18 +127,19 @@ def write_readings(start_date,end_date):
     end_month = str(parser.parse(end_date).strftime("%B"))
     for device_tuple in devices:
         readings_matrix = get_historical_readings(device_tuple[0], start_date, end_date)
-        header_row = readings_matrix[:1][0]
-        print(header_row)
-        readings_matrix = readings_matrix[1:] # Remove header row
-        device_endpoint = get_device_endpoint(device_tuple[0])
-        device_station = device_tuple[1]
-        with open(os.path.join(sub_folder,'out_WA_' + device_station + "_" + start_month + start_year + "_" + end_month + end_year + "_RAW" + '.csv'),'w') as file:
-            file.write('''Id,MeasurementTime,SensorName,SensorDescription,SensorDetails,Type,Units,CurrentValue,Lat,Long\n''')
-            for original_row in readings_matrix:
-                rows = split_readings(original_row, device_station, device_endpoint,locations[device_station], sensor_lat_lons[device_station][0],sensor_lat_lons[device_station][1],header_row.index("burst_id"),header_row.index("created_at"),header_row.index("depth"),header_row.index("water_temperature"),header_row.index("conductivity"),header_row.index("salinity"),header_row.index("water_density"))
-                for new_row in rows:
-                    file.write(','.join(str(col) for col in new_row))
-                    file.write('\n')
+        if len(readings_matrix) > 0:
+            header_row = readings_matrix[:1][0]
+            print(header_row)
+            readings_matrix = readings_matrix[1:] # Remove header row
+            device_endpoint = get_device_endpoint(device_tuple[0])
+            device_station = device_tuple[1]
+            with open(os.path.join(sub_folder,'out_WA_' + device_station + "_" + start_month + start_year + "_" + end_month + end_year + "_RAW" + '.csv'),'w') as file:
+                file.write('''Id,MeasurementTime,SensorName,SensorDescription,SensorDetails,Type,Units,CurrentValue,Lat,Long\n''')
+                for original_row in readings_matrix:
+                    rows = split_readings(original_row, device_station, device_endpoint,locations[device_station], sensor_lat_lons[device_station][0],sensor_lat_lons[device_station][1],header_row.index("telemetry_session_id"),header_row.index("created_at"),header_row.index("depth"),header_row.index("water_temperature"),header_row.index("conductivity"),header_row.index("salinity"),header_row.index("water_density"))
+                    for new_row in rows:
+                        file.write(','.join(str(col) for col in new_row))
+                        file.write('\n')
 
 def parse_month_year(month, year):
     if int(month) in range(1,13):
