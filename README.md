@@ -55,3 +55,10 @@ The following directories will be created by the program:
    Stores example RO-Crates
 * ocfl-demos/ocfl:
    Stores the generated OCFL repository
+
+#### Technology
+* This requires Python3.9 or greater
+* Requirements are listed in requirements.txt, and can be installed using
+```
+pip install -r requirements.txt
+```
