@@ -107,6 +107,8 @@ if [[ -v INSITU ]]; then
 
 fi
 
+#TODO: Working up until this point, need to do stages 2 and 3
+
 # Stage 2: Depositing the data in OCFL repo
 
 # Stage 3: Synchronising the OCFL repo in AWS
