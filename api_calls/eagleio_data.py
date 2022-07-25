@@ -50,7 +50,7 @@ sensor_lat_lons = {
 }
 
 
-sub_folder = "ict_data"
+sub_folder = os.path.join(os.path.dirname(__file__),"ict_data") # Set folder path to beside current file, in folder ict_data
 api_key = ""
 api_url = "https://api.data.ictinternational.com/api/v1/"
 devices_endpoint = "nodes/"
@@ -81,7 +81,7 @@ def parse_month_year(month, year):
 
 def load_api_key():
     global api_key
-    with open("eagleio_key.secret","r") as file:
+    with open(os.path.join(os.path.dirname(__file__),"eagleio_key.secret"),"r") as file:
         api_key = file.read().strip()
     return api_key
 

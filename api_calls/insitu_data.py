@@ -29,7 +29,7 @@ sensor_lat_lons = {
     "A4": (-34.986217, 117.956850)
 }
 
-sub_folder = "insitu_data"
+sub_folder = os.path.join(os.path.dirname(__file__),"insitu_data") # Set folder path to beside current file, in folder insitu_data
 api_key = ""
 api_url = "https://api.insitumarineoptics.com/v1/"
 devices_endpoint = "devices"
@@ -37,7 +37,7 @@ devices_endpoint = "devices"
 
 def load_api_key():
     global api_key
-    with open("insitu_key.secret","r") as file:
+    with open(os.path.join(os.path.dirname(__file__),"insitu_key.secret"),"r") as file:
         api_key = file.read().strip()
     return api_key
 
