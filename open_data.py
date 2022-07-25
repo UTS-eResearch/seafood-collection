@@ -21,6 +21,8 @@ import re # For extracting years from filenames
 # - Add notes around the data into RO-Crates for specific sensors and dates
 # - Add local timezones
 
+sub_folder = 'sensor-data'
+
 # Globals from generate_data TODO: delete the unnecessary ones of these:
 MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 MONTH_NUMBERS = {"January":"01","February":"02","March":"03","April":"04","May":"05","June":"06","July":"07","August":"08","September":"09","October":"10","November":"11","December":"12"}
@@ -264,7 +266,7 @@ def package_data(crate,temperature,salinity,depth,location_name, month, year, fi
 
     # Need to have an existing Collection which has conformsTo
     # To handle Oni 2 indexer, add collection based on
-    # Must have top-level license 
+    # Must have top-level license
 
     # list(crate.get_entities()) (returns a list of entities in the crate, can then do list[0].properties() to get properties of dataset)
 
@@ -297,8 +299,9 @@ def create_monthly_ro_crate(temperature,salinity,depth,file_name, location_name,
     for csv_file in csv_files:
         file_entity = crate.add_file(os.path.join(filepath,csv_file + ".csv")) # Adds the file reference to the crate, and will cause it to be saved next to it when written to disk
     package_data(crate,temperature,salinity,depth,location_name, month, year, csv_files[-1], file_entity) # Should use working csv file name (csv_files[-1]), since it needs the full .csv reference
-    crate.write_crate(file_name)
-    os.system('xlro -j ' + file_name)
+    crate_filepath = os.path.join(sub_folder, file_name)
+    crate.write_crate(crate_filepath)
+    os.system('xlro -j ' + crate_filepath)
     # Delete the image file now that it's in the crate - TODO This removes all instances of the image?
     os.remove(file_name + ".png")
     return file_entity
@@ -512,6 +515,7 @@ def process_api_data(csv_file_path, csv_file_name):
         plain_filename = key.removesuffix(".csv")
         # for k,v in values.items():
         #     print(k)
+
         create_monthly_ro_crate(values["temperature"],values["salinity"],values["depth"],plain_filename,location_name,values["start_month"],values["start_year"],[plain_filename],csv_file_path)
 
 def load_api_data_from_folder(filepath):
@@ -562,4 +566,4 @@ if __name__ == "__main__":
             print("Make sure you specify either --file or --folder in the second position")
     else:
         print("Wrong commandline amount of options present:",len(sys.argv), " should be 5")
-    print("Usage: python3 open_data.py <--api/--downloaded>, <--file/--folder>, <file/folder path>")
+        print("Usage: python3 open_data.py <--api/--downloaded>, <--file/--folder>, <file/folder path>")

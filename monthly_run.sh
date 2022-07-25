@@ -74,12 +74,14 @@ echo "Looking for API scripts in ${API_PATH}"
 if [[ -v ICT ]]; then
 	echo "Clearing all files in ${API_PATH}/api_calls/ict_data/"
 	rm -f ${API_PATH}/api_calls/ict_data/*
+	echo "Running: $PYTHON_PATH $API_PATH/api_calls/eagleio_data.py $START_DATE $END_DATE"
 	$PYTHON_PATH $API_PATH/api_calls/eagleio_data.py $START_DATE $END_DATE
 fi
 
 if [[ -v INSITU ]]; then
 	echo "Clearing all files in ${API_PATH}/api_calls/insitu_data/"
 	rm -f ${API_PATH}/api_calls/insitu_data/*
+	echo "Running: $PYTHON_PATH $API_PATH/api_calls/insitu_data.py $START_DATE $END_DATE"
 	$PYTHON_PATH $API_PATH/api_calls/insitu_data.py $START_DATE $END_DATE
 fi
 
@@ -93,12 +95,14 @@ fi
 
 if [[ -v ICT ]]; then
 
+	echo "Running: $PYTHON_PATH $API_PATH/open_data.py --api --folder $API_PATH/api_calls/ict_data/"
 	$PYTHON_PATH $API_PATH/open_data.py --api --folder $API_PATH/api_calls/ict_data/
 
 fi
 
 if [[ -v INSITU ]]; then
 
+	echo "Running: $PYTHON_PATH $API_PATH/open_data.py --api --folder $API_PATH/api_calls/insitu_data/"
 	$PYTHON_PATH $API_PATH/open_data.py --api --folder $API_PATH/api_calls/insitu_data/
 
 fi
