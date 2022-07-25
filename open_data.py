@@ -6,6 +6,8 @@ import openpyxl # For opening the excel
 import csv # For saving the csv file
 import matplotlib.pyplot as plt # For creating a diagram
 from dateutil import parser # For handling ISO 8601 strings
+import sys # For commandline usage
+import re # For extracting years from filenames
 
 # Plans:
 # - Split into monthly csvs, from first of the month 00AM to last of the month 11:59PM - DONE!
@@ -101,6 +103,32 @@ def select_sheet(name_part, workbook):
     else:
         return selected_sheet
 
+def get_first_month_from_filename(filename):
+    min_value = None
+    month_name_length = 0
+    for month_name in MONTHS:
+        if month_name in filename:
+            if min_value is None:
+                min_value = filename.find(month_name)
+                month_name_length = len(month_name)
+            elif filename.find(month_name) < min_value:
+                min_value = filename.find(month_name)
+                month_name_length = len(month_name)
+    if min_value:
+        end_value = min_value + month_name_length
+        return filename[min_value:end_value]
+    else:
+        return None
+
+
+
+def get_first_year_from_filename(filename):
+    matches = re.search("[0-9]{4}", filename)
+    if matches:
+        return matches.group()
+    else:
+        return None
+
 def save_csv_file(sheet,header_row,start_row,end_row,file_name):
 
     if not os.path.exists(NEW_CSV_FILE_FOLDER):
@@ -192,6 +220,9 @@ def package_data(crate,temperature,salinity,depth,location_name, month, year, fi
     plot_three_datas(salinity, temperature, depth, file_name)
     crate.add_file(file_name + ".png")
     crate.image = file_name + ".png"
+
+
+
     ## Calculate the min, max and avg values, and add to the dataset in the crate
     if len(temperature) > 0:
         #print(temperature)
@@ -231,6 +262,10 @@ def package_data(crate,temperature,salinity,depth,location_name, month, year, fi
     # Add the authors
     add_authors(crate,AUTHORS)
 
+    # Need to have an existing Collection which has conformsTo
+    # To handle Oni 2 indexer, add collection based on
+    # Must have top-level license 
+
     # list(crate.get_entities()) (returns a list of entities in the crate, can then do list[0].properties() to get properties of dataset)
 
 
@@ -264,6 +299,8 @@ def create_monthly_ro_crate(temperature,salinity,depth,file_name, location_name,
     package_data(crate,temperature,salinity,depth,location_name, month, year, csv_files[-1], file_entity) # Should use working csv file name (csv_files[-1]), since it needs the full .csv reference
     crate.write_crate(file_name)
     os.system('xlro -j ' + file_name)
+    # Delete the image file now that it's in the crate - TODO This removes all instances of the image?
+    os.remove(file_name + ".png")
     return file_entity
     #preview = Preview(crate) # Create a preview of the crate
     #preview.write(file_name) # Write that preview out to the same folder
@@ -366,10 +403,12 @@ def process_api_csv(csv_rows, raw_status="RAW", location_code=None, file_name=No
     value_dict = {}
     header_row = True
     headers = []
+    start_row = 0
+    end_row = 0
     first_row= None
     last_row = None
-    start_month = None
-    start_year = None
+    start_month = None # Need to set this from filename as fallback
+    start_year = None # Need to set this from filename as fallback
     depth = []
     temperature = []
     salinity = []
@@ -421,10 +460,15 @@ def process_api_csv(csv_rows, raw_status="RAW", location_code=None, file_name=No
     # Handles final rows
     #print("Salnity",salinity)
     end_row = len(csv_rows) - 1
-    print("Saving rows: ",start_row, " to ", end_row)
+    print("Processing rows: ",start_row, " to ", end_row)
     csv_file_name = file_name
-    print("in file: ", csv_file_name + ".csv")
+    print("from file: ", csv_file_name)
     #save_csv_file(sheet,headers,start_row,end_row,csv_file_name)
+    if start_month is None: # No values to get month from:
+        start_month = get_first_month_from_filename(file_name)
+    if start_year is None:
+        start_year = get_first_year_from_filename(file_name)
+
     value_dict[csv_file_name] = {"salinity":salinity, "temperature":temperature,"depth":depth,"start_month":start_month,"start_year":start_year}
     #create_monthly_ro_crate(temperature,salinity,depth, file_name, location_name, start_month, start_year)
     return value_dict
@@ -476,7 +520,7 @@ def load_api_data_from_folder(filepath):
     for file in os.listdir(directory):
         if os.path.isfile(os.path.join(directory,file)) and ".csv" in file:
             location_name = get_location_name(file)
-            process_api_data(directory, file, location_name)
+            process_api_data(directory, file)
 
 def load_estuary_data(filepath):
     location_code = get_location_code_by_name(filepath)
@@ -500,4 +544,22 @@ def load_estuary_data(filepath):
 if __name__ == "__main__":
     # TODO: Split option between API data and exported data
     # TODO: List all files in a path, and then process them
-    print("You're running this wrong, command line not implemented yet")
+    if len(sys.argv) == 4:
+        first_option = sys.argv[1]
+        second_option = sys.argv[2]
+        third_option = sys.argv[3]
+        if second_option == "--folder":
+            if first_option == "--api":
+                load_api_data_from_folder(third_option)
+            elif first_option == "--downloaded":
+                load_estuary_data(third_option)
+        elif second_option == "--file":
+            if first_option == "--api":
+                process_api_data(os.getcwd(),third_option)
+            elif first_option == "--downloaded":
+                print("I don't have a function for that yet...")
+        else:
+            print("Make sure you specify either --file or --folder in the second position")
+    else:
+        print("Wrong commandline amount of options present:",len(sys.argv), " should be 5")
+    print("Usage: python3 open_data.py <--api/--downloaded>, <--file/--folder>, <file/folder path>")
