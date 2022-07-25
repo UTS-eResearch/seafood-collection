@@ -27,22 +27,22 @@ do
 # echo "$#" # Testing the shift 
 case $1 in
  -w|--insitu)
-	echo "Getting the Insitu data from WA"
 	INSITU=true
+	echo "Getting the Insitu data from WA"
 	;;
  -n|--ict)
-	echo "Getting the ICT data from NSW"
 	ICT=true
+	echo "Getting the ICT data from NSW"
 	;;
  -o|--ocfl_repo)
 	shift
-	echo "OCFL Repo located at: ${1}"
 	OCFL_REPO=$1
+	echo "OCFL Repo located at: ${1}"
 	;;
  -a|--aws_sync_script)
 	shift
-	echo "AWS Sync Script located at: ${1}"
 	AWS_SCRIPT=$1
+	echo "AWS Sync Script located at: ${1}"
 	;;
  --)
 	shift
@@ -71,37 +71,33 @@ else
 fi
 
 echo "Looking for API scripts in ${API_PATH}"
-
-if [[ $ICT -eq true ]]; then
-
+if [[ -v ICT ]]; then
 	echo "Clearing all files in ${API_PATH}/api_calls/ict_data/"
 	rm -f ${API_PATH}/api_calls/ict_data/*
 	$PYTHON_PATH $API_PATH/api_calls/eagleio_data.py $START_DATE $END_DATE
-
 fi
 
-if [[ $INSITU -eq true ]]; then
-
+if [[ -v INSITU ]]; then
 	echo "Clearing all files in ${API_PATH}/api_calls/insitu_data/"
 	rm -f ${API_PATH}/api_calls/insitu_data/*
 	$PYTHON_PATH $API_PATH/api_calls/insitu_data.py $START_DATE $END_DATE
-
 fi
 
 
 # Stage 1.5: Packaging the data into RO-Crates
+if [[ -v ICT ]] || [[ -v INSITU ]]; then
+	echo "Clearing all files in ${API_PATH}/sensor-data/"
+	rm -f ${API_PATH}/sensor-data/*
+	cd ${API_PATH}
+fi
 
-echo "Clearing all files in ${API_PATH}/sensor-data/"
-rm -f ${API_PATH}/sensor-data/*
-cd ${API_PATH}
-
-if [[ $ICT -eq true ]]; then
+if [[ -v ICT ]]; then
 
 	$PYTHON_PATH $API_PATH/open_data.py --api --folder $API_PATH/api_calls/ict_data/
 
 fi
 
-if [[ $INSITU -eq true ]]; then
+if [[ -v INSITU ]]; then
 
 	$PYTHON_PATH $API_PATH/open_data.py --api --folder $API_PATH/api_calls/insitu_data/
 
