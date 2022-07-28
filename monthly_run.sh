@@ -8,7 +8,7 @@
 
 PROGRAM_NAME=$0
 function usage {
-	echo "usage: $PROGRAM_NAME [-w|--insitu] [-n|--ict] [-o|-ocfl_repo <location>] [-a|--aws_sync_script <location>] start_date end_date"
+	echo "usage: $PROGRAM_NAME [-w|--insitu] [-n|--ict] [[-d|--deposit_script <location>] [-o|--ocfl_repo <location>]] [-a|--aws_sync_script <location>] start_date end_date"
 	echo "start_date and end_date should be in format yyyy-mm (ISO 8601), e.g. 2022-02"
 	echo ""
 	echo "Environment Variables:"
@@ -21,7 +21,7 @@ function usage {
 
 # Stage 0: Option Parsing/Handling:
 
-options=$(getopt -l "insitu,ict,ocfl_repo:,aws_sync_script::" -- "wno:a::" "$@")
+options=$(getopt -l "insitu,ict,ocfl_repo:,deposit_script:,aws_sync_script::" -- "wno:d:a::" "$@")
 while [[ "$#" -gt 2 ]]
 do
 # echo "$#" # Testing the shift 
@@ -38,6 +38,11 @@ case $1 in
 	shift
 	OCFL_REPO=$1
 	echo "OCFL Repo located at: ${1}"
+	;;
+ -d|--deposit_script)
+	shift
+	DEPOSIT_SCRIPT=$1
+	echo "OCFL Deposit script located at: ${DEPOSIT_SCRIPT}"
 	;;
  -a|--aws_sync_script)
 	shift
@@ -110,6 +115,11 @@ fi
 #TODO: Working up until this point, need to do stages 2 and 3
 
 # Stage 2: Depositing the data in OCFL repo
+if [[-v DEPOSIT_SCRIPT ]] && [[ -v OCFL_REPO ]]; then
+	`node $DEPOSIT_SCRIPT --repo $OCFL_REPO --name seafood $API_PATH/sensor-data/*`
+fi
+
+# node /home/skruik/src/ocfl-demos/ro-crate-deposit.js --repo /home/skruik/src/seafood-collection-v1-2-1/oni-express/ocfl --name seafood out_*
 
 # Stage 3: Synchronising the OCFL repo in AWS
 

@@ -63,3 +63,4 @@ The following directories will be created by the program:
 pip install -r requirements.txt
 ```
 * This requires [xlro](https://github.com/UTS-eResearch/ro-crate-excel) installed and functioning with `xlro -j` as this is used by the open_data.py file
+* As stated above, this requires node installed, and the ro-crate-deposit script cloned from OCFL-Demos
