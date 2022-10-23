@@ -137,6 +137,8 @@ def get_device_endpoint(device_id):
 
 def get_historical_readings(device_id, start_date, end_date): ### TODO: Change from insitu to eagleio
     readings_matrix = []
+    #print("startTime",start_date)
+    #print("endTime",end_date)
     query_params = [("startTime",start_date),("endTime",end_date),("format","csv")]
     endpoint = get_device_endpoint(device_id)
     readings_string = api_get(endpoint, query_params)
@@ -289,6 +291,8 @@ def write_readings(start_date,end_date):
     start_month = str(parser.parse(start_date).strftime("%B"))
     end_year = str(parser.parse(end_date).year)
     end_month = str(parser.parse(end_date).strftime("%B"))
+    start_date = str(parser.parse(start_date).isoformat()) + "Z" # Converts to full ISO 8601 Timestamp for API compatibility
+    end_date = str(parser.parse(end_date).isoformat()) + "Z" # Converts to full ISO 8601 Timestamp for API compatibility
     devices = get_devices()
     loc_devices = {}
     for sensor_code, loc_name in locations.items():
