@@ -1,0 +1,92 @@
+{
+  "ocfl": "/etc/share/ocfl",
+  "identifierNamespace": "seafood",
+  "uriIds": "identifiers",
+  "retries": 10,
+  "retryInterval": 10,
+  "purge": true,
+  "updateSchema": true,
+  "dryRun": false,
+  "catalogFilename": "ro-crate-metadata.json",
+  "solrBase": "http://127.0.0.1:8983/solr/ocfl",
+  "hashAlgorithm": "md5",
+  "waitPeriod": 0,
+  "schemaBase": "/etc/share/config/schema_base.json",
+  "logLevel": "debug",
+  "log": {
+    "filename": "/etc/share/logs/indexer.log",
+    "level": "debug"
+  },
+  "portal": {
+    "base": "/etc/share/config/portal_base.json",
+    "config": "/etc/share/config/portal.json",
+    "facetDefaults": {
+      "limit": 5
+    }
+  },
+  "fields": {
+    "main_search": [
+      "name",
+      "description",
+      "id"
+    ],
+    "map_all": {
+      "@id": [
+        "id",
+        "id_orig"
+      ],
+      "@type": [
+        "record_type_s",
+        "type_label"
+      ]
+    },
+    "licenses": {
+      "__default__": "public"
+    },
+    "store_subgraph": false,
+    "types": {
+      "Dataset": {
+        "@id": {
+          "name": "seafood",
+          "filter": {
+            "is_root": true
+          }
+        },
+        "@reverse": {
+          "skip": true
+        },
+        "hasPart": {
+          "skip": false
+        },
+        "hasFile": {
+          "skip": false
+        },
+        "contentLocation": {
+          "multi": true,
+          "facet": true,
+          "resolve": {
+            "search": "@id",
+            "display": "name"
+          }
+        },
+	 "month": {
+        	"multi": true,
+            	"facet": true
+       	},
+	"year": {
+		"multi": true,
+		"facet": true
+	},
+	"image": {
+		"skip": false
+	},
+	"QuantitativeValue": {
+	  "skip": false,
+	  "multi": true
+
+        }	
+      }
+    }
+  }
+}
+
