@@ -9,7 +9,8 @@
     "logo": "images/logo.svg",
     "menu": [
       "help",
-      "about"
+      "about",
+	  "citation"
     ]
   },
   "footer": {
@@ -33,7 +34,11 @@
     "help": {
       "title": "Help",
       "text": "<p>Welcome to the <em>Library of Successful Grants</em>. Please see the <a href=\"/#page/privacy\">Privacy Statement</a> for important information about the conditions of use.</p><p>You can focus on a particular funding round, year, faculty/school/department, lead investigator, keyword or FOR code by clicking on one of the links to the left.</p><p>With the exception of Funder and Year, this column only shows the top five or ten results in a facet. To brows all of the values for a facet, click one of the following links (or the 'all...' link in any of the facet panes):</p><ul><li><a href=\"/#search/0/1/showFacet=Dataset_funder_facetmulti\">Funder</a></li><li><a href=\"/#search/0/1/showFacet=Dataset_dateCreated_facetmulti\">Year</a></li><li><a href=\"/#search/0/1/showFacet=Dataset_affiliation_facetmulti\">School/Dept</a></li><li><a href=\"/#search/0/1/showFacet=Dataset_lead_facet\">Lead investigator</a></li><li><a href=\"/#search/0/1/showFacet=Dataset_keywords_facetmulti\">Keywords</a></li><li><a href=\"/#search/0/1/showFacet=Dataset_FOR_facetmulti\">FOR codes</a></li></ul><p>You can search the full text of grants by entering terms in the search box beneath the menu bar.</p><p>When you click on a facet value, it will appear as a search filter beneath the search box, and clicking multiple facet values will add to the filter list. The filter list will be applied to text search results. To remove a filter, click the 'x' which appears in the tag.</p><p>For technical support, contact <a href=\"mailto:eResearch-it@uts.edu.au\">eResearch Support Group</a>.</p>"
-    }
+    },
+	"citation": {
+	  "title": "Citation",
+	  "text":"<p> To cite us, please use...</p>"
+	}
   },
   "facets": {
   },
@@ -53,8 +58,12 @@
         "summaryFields": [
           {
             "label": "Date",
-            "field": "datePublished"
+            "field": "temporalCoverage"
           },
+	  {
+	    "label": "Date",
+	    "field": "temporal"
+	  },
 	  {
 	    "label": "Name",
 	    "field": "name"
@@ -64,6 +73,14 @@
           {
             "field": "description"
    	  },
+	  {
+	    "label": "Bacteria Found",
+	    "field": "Bacteria"
+	  },
+	  {
+	    "label": "Depth (mm)",
+	    "field": "Depth"
+	  },
 	  {
 	    "label": "License",
 	    "field": "license"

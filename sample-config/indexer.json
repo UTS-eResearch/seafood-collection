@@ -1,5 +1,5 @@
 {
-  "ocfl": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/ocfl",
+  "ocfl": "/etc/share/ocfl",
   "identifierNamespace": "seafood",
   "uriIds": "identifiers",
   "retries": 10,
@@ -8,20 +8,20 @@
   "updateSchema": true,
   "dryRun": false,
   "catalogFilename": "ro-crate-metadata.json",
-  "solrBase": "http://localhost:8983/solr/ocfl",
+  "solrBase": "http://host.docker.internal:8983/solr/ocfl",
   "hashAlgorithm": "md5",
   "waitPeriod": 0,
-  "schemaBase": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/config/schema_base.json",
+  "schemaBase": "/etc/share/config/schema_base.json",
 
   "logLevel": "debug",
 
   "log": {
-    "filename": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/logs/indexer.log",
+    "filename": "/etc/share/logs/indexer.log",
     "level": "debug"
   },
   "portal": {
-    "base": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/config/portal_base.json",
-    "config": "/mnt/d/source_code/seafood-collection-v1-2-1/oni-express/config/portal.json",
+    "base": "/etc/share/config/portal_base.json",
+    "config": "/etc/share/config/portal.json",
     "facetDefaults": {
       "limit": 5
     }
@@ -58,14 +58,17 @@
           "skip": true
         },
         "hasPart": {
-	  "skip":true
+	  "skip": false
 	},
         "hasFile": {
-          "skip": true
+          "skip": false
         },
         "temporalCoverage": {
-          "skip": true
+          "skip": false
         },
+	"temporal": {
+	  "skip":false
+	},
         "contentLocation": {
           "multi": true,
           "facet": true,
@@ -76,7 +79,22 @@
 	"month": {
 	  "multi": true,
 	  "facet": true
-        }
+        },
+	"Bacteria": {
+	  "skip": false,
+	  "multi": true,
+	  "facet": true
+	},
+	"Depth": {
+	  "facet": true,
+	  "resolve":{
+	    "display": "value",
+	    "search": "depthReading"
+	  }
+	}
+
+
+
       }
     }
   }
