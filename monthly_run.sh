@@ -94,7 +94,7 @@ fi
 # Stage 1.5: Packaging the data into RO-Crates
 if [[ -v ICT ]] || [[ -v INSITU ]]; then
 	echo "Clearing all files in ${API_PATH}/sensor-data/"
-	rm -f ${API_PATH}/sensor-data/*
+	rm -rf ${API_PATH}/sensor-data/*
 	cd ${API_PATH}
 fi
 
@@ -115,14 +115,19 @@ fi
 #TODO: Working up until this point, need to do stages 2 and 3
 
 # Stage 2: Depositing the data in OCFL repo
-if [[-v DEPOSIT_SCRIPT ]] && [[ -v OCFL_REPO ]]; then
-	`node $DEPOSIT_SCRIPT --repo $OCFL_REPO --name seafood $API_PATH/sensor-data/*`
+if [[ -v DEPOSIT_SCRIPT ]] && [[ -v OCFL_REPO ]]; then
+	echo "Running: node $DEPOSIT_SCRIPT --repo $OCFL_REPO --name seafood $API_PATH/sensor-data/*" 
+	node $DEPOSIT_SCRIPT --repo $OCFL_REPO --name seafood $API_PATH/sensor-data/*
 fi
 
 # node /home/skruik/src/ocfl-demos/ro-crate-deposit.js --repo /home/skruik/src/seafood-collection-v1-2-1/oni-express/ocfl --name seafood out_*
 
 # Stage 3: Synchronising the OCFL repo in AWS
 
+if [[ -v AWS_SCRIPT ]]; then
+	echo "Running: $AWS_SCRIPT"
+	$AWS_SCRIPT
+fi
 
 # Giving help function
 if [[ "$#" -eq 0 ]]; then
