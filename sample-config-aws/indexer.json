@@ -8,13 +8,11 @@
   "updateSchema": true,
   "dryRun": false,
   "catalogFilename": "ro-crate-metadata.json",
-  "solrBase": "http://host.docker.internal:8983/solr/ocfl",
+  "solrBase": "http://127.0.0.1:8983/solr/ocfl",
   "hashAlgorithm": "md5",
   "waitPeriod": 0,
   "schemaBase": "/etc/share/config/schema_base.json",
-
   "logLevel": "debug",
-
   "log": {
     "filename": "/etc/share/logs/indexer.log",
     "level": "debug"
@@ -58,45 +56,37 @@
           "skip": true
         },
         "hasPart": {
-	  "skip": false
-	},
+          "skip": false
+        },
         "hasFile": {
           "skip": false
         },
-        "temporalCoverage": {
-          "skip": false
-        },
-	"temporal": {
-	  "skip":false
-	},
         "contentLocation": {
           "multi": true,
           "facet": true,
-	  "resolve": {
-	    "search": "@id",
-	    "display": "name"
-	},
-	"month": {
-	  "multi": true,
-	  "facet": true
+          "resolve": {
+            "search": "@id",
+            "display": "name"
+          }
         },
-	"Bacteria": {
-	  "skip": false,
-	  "multi": true,
-	  "facet": true
+	 "month": {
+        	"multi": true,
+            	"facet": true
+       	},
+	"year": {
+		"multi": true,
+		"facet": true
 	},
-	"Depth": {
-	  "facet": true,
-	  "resolve":{
-	    "display": "value",
-	    "search": "depthReading"
-	  }
-	}
+	"image": {
+		"skip": false
+	},
+	"QuantitativeValue": {
+	  "skip": false,
+	  "multi": true
 
-
-
+        }	
       }
     }
   }
 }
-}
+
