@@ -112,7 +112,6 @@ if [[ -v INSITU ]]; then
 
 fi
 
-#TODO: Working up until this point, need to do stages 2 and 3
 
 # Stage 2: Depositing the data in OCFL repo
 if [[ -v DEPOSIT_SCRIPT ]] && [[ -v OCFL_REPO ]]; then
@@ -126,8 +125,13 @@ fi
 
 if [[ -v AWS_SCRIPT ]]; then
 	echo "Running: $AWS_SCRIPT"
-	$AWS_SCRIPT
+	cd `dirname $AWS_SCRIPT`
+	source $AWS_SCRIPT
 fi
+
+# Stage 4: Re-index the site
+	echo "Re-indexing site"
+	curl https://salinity.research.uts.edu.au/config/index/run --header "Authorization: Bearer theseafoodtoken"
 
 # Giving help function
 if [[ "$#" -eq 0 ]]; then

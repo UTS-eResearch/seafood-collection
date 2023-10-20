@@ -53,11 +53,14 @@ def api_get(endpoint,query_params=None):
         print("Error with API call")
         print(response.status_code)
         print(response.text)
+        raise Exception(f"Error with API call: {url} {response.status_code} {response.text}")
     return None
 
 def get_devices():
     device_id_list = []
-    devices = json.loads(api_get(devices_endpoint))
+    api_response = api_get(devices_endpoint)
+    print(f"api_response: {api_response}")
+    devices = json.loads(api_response)
     for device in devices:
         if "ctd" in device["device_id"]: # I can't handle PHIDO currently, talk to me later
             device_id_list.append((device["device_id"],device["station_name"]))
@@ -121,6 +124,7 @@ def write_months_readings(start_date, end_date):
 
 def write_readings(start_date,end_date):
     devices = get_devices()
+    print(f"devices in write_readings: {devices}")
     start_year = str(parser.parse(start_date).year)
     start_month = str(parser.parse(start_date).strftime("%B"))
     end_year = str(parser.parse(end_date).year)
@@ -132,11 +136,19 @@ def write_readings(start_date,end_date):
             print(header_row)
             readings_matrix = readings_matrix[1:] # Remove header row
             device_endpoint = get_device_endpoint(device_tuple[0])
+            print(f"device_endpoint: {device_endpoint}")
             device_station = device_tuple[1]
             with open(os.path.join(sub_folder,'out_WA_' + device_station + "_" + start_month + start_year + "_" + end_month + end_year + "_RAW" + '.csv'),'w') as file:
                 file.write('''Id,MeasurementTime,SensorName,SensorDescription,SensorDetails,Type,Units,CurrentValue,Lat,Long\n''')
                 for original_row in readings_matrix:
-                    rows = split_readings(original_row, device_station, device_endpoint,locations[device_station], sensor_lat_lons[device_station][0],sensor_lat_lons[device_station][1],header_row.index("telemetry_session_id"),header_row.index("created_at"),header_row.index("depth"),header_row.index("water_temperature"),header_row.index("conductivity"),header_row.index("salinity"),header_row.index("water_density"))
+                    rows=[]
+                    try:
+                        rows = split_readings(original_row, device_station, device_endpoint,locations[device_station], sensor_lat_lons[device_station][0],sensor_lat_lons[device_station][1],header_row.index("telemetry_session_id"),header_row.index("created_at"),header_row.index("depth"),header_row.index("water_temperature"),header_row.index("conductivity"),header_row.index("salinity"),header_row.index("water_density"))
+                    except Exception as e:
+                        print("Error!")
+                        print(f"Error: {repr(e)}")
+                        print(f"row: {original_row}")
+                        print(f"device_tuple: {device_tuple}")
                     for new_row in rows:
                         file.write(','.join(str(col) for col in new_row))
                         file.write('\n')
