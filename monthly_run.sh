@@ -87,7 +87,7 @@ if [[ -v INSITU ]]; then
 	echo "Clearing all files in ${API_PATH}/api_calls/insitu_data/"
 	rm -f ${API_PATH}/api_calls/insitu_data/*
 	echo "Running: $PYTHON_PATH $API_PATH/api_calls/insitu_data.py $START_DATE $END_DATE"
-	$PYTHON_PATH $API_PATH/api_calls/insitu_data.py $START_DATE $END_DATE
+	$PYTHON_PATH $API_PATH/api_calls/insitu_data_test.py $START_DATE $END_DATE
 fi
 
 
