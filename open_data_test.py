@@ -33,9 +33,9 @@ PLACES = [
     ]
 PLACE_CODES = {
     "Camden Haven":"CH","Clyde River":"CLY","Georges River":"GR","Hawkesbury River":"HR","Hastings River":"HS","Manning River":"Man","Pambula Lake - downstream":"PAM_02",
-    "Pambula Lake - upstream":"PAM", "Pindimar":"PIN", "Port Stephens":"PS","Shoalhaven-Crookhaven River":"SH","Wagonga Inlet":"WAG","Wallis Lake":"WAL","Wonboyn Lake":"WON","Wapengo Lake":"WPG",
+    "Pambula Lake - upstream":"PAM", "Pindimar - Port Stephens":"PIN", "Cromatys Bay - Port Stephens":"PS","Shoalhaven-Crookhaven River":"SH","Wagonga Inlet":"WAG","Wallis Lake":"WAL","Wonboyn Lake":"WON","Wapengo Lake":"WPG",
     "Oyster Harbour North":"WA_A1B","Oyster Harbour Central":"WA_A2","Oyster Harbour East":"WA_A3","Oyster Harbour East":"WA_A3B","Oyster Harbour South":"WA_A4",
-    "Macleay River":"mncm2l301", "Hastings River":"mncm2l302", "Camden Haven":"mncm2l303", "Manning River":"mncm2l304", "Port Stephens":"mncm2l305","Georges River":"mncm2l306",
+    "Macleay River":"mncm2l301", "Hastings River":"mncm2l302", "Camden Haven":"mncm2l303", "Manning River":"mncm2l304", "Cromatys Bay - Port Stephens":"mncm2l305","Georges River":"mncm2l306",
     "Shoalhaven-Crookhaven River":"mncm2l307", "Wagonga Inlet":"mncm2l308", "Wapengo Lake":"mncm2l309", "Merimbula Lake":"mncm2l30a", "Pambula Lake":"mncm2l30bc",
     "Wonboyn Lake":"mncm2l30d"
     }
@@ -43,7 +43,7 @@ PLACE_LOCATIONS = {
     "Camden Haven":"https://sws.geonames.org/8210175/","Clyde River":"https://sws.geonames.org/2171249/","Georges River":"https://sws.geonames.org/2205884/",
     "Hawkesbury River":"https://sws.geonames.org/2205605/","Hastings River":"https://sws.geonames.org/2163834/","Manning River":"https://sws.geonames.org/2158850/",
     "Pambula Lake - upstream":"https://sws.geonames.org/8594508/","Pambula Lake - downstream":"https://sws.geonames.org/8594508/",
-    "Port Stephens":"https://sws.geonames.org/9409163/","Pindimar":"https://sws.geonames.org/2153153/","Shoalhaven-Crookhaven River":"https://sws.geonames.org/2149595/","Wagonga Inlet":"https://sws.geonames.org/2207090/",
+    "Cromatys Bay - Port Stephens":"https://sws.geonames.org/9409163/","Pindimar - Port Stephens":"https://sws.geonames.org/2153153/","Shoalhaven-Crookhaven River":"https://sws.geonames.org/2149595/","Wagonga Inlet":"https://sws.geonames.org/2207090/",
     "Wallis Lake":"https://sws.geonames.org/8539070/","Wonboyn Lake":"https://sws.geonames.org/8210771/","Wapengo Lake":"https://sws.geonames.org/8594517/",
     "Oyster Harbour North":"https://sws.geonames.org/2064011/", "Oyster Harbour Central":"https://sws.geonames.org/2064011/", "Oyster Harbour East":"https://sws.geonames.org/2064011/",
     "Oyster Harbour South":"https://sws.geonames.org/2064011/", "Macleay River":"https://sws.geonames.org/2159179/", "Merimbula Lake":"https://sws.geonames.org/2158019/",
@@ -52,11 +52,11 @@ PLACE_LOCATIONS = {
 LAT_LONG = {
     "Camden Haven":["-31.64478","152.82822"],"Clyde River":["-35.70093","150.13341"],"Georges River":["-34.02245","151.176"],"Hawkesbury River":["-33.5443","151.1365167"],
     "Hastings River":["-31.40406","152.89172"],"Manning River":["-31.89088","152.63981"],"Pambula Lake - downstream":["-36.96811903","149.884795"],
-    "Pambula Lake - upstream":["-36.96811903","149.884795"],"Port Stephens":["-32.7196","152.06093"],"Shoalhaven-Crookhaven River":["-34.9118","150.74158"],
+    "Pambula Lake - upstream":["-36.96811903","149.884795"],"Cromatys Bay - Port Stephens":["-32.7196","152.06093"],"Shoalhaven-Crookhaven River":["-34.9118","150.74158"],
     "Wagonga Inlet":["-36.22161","150.07128"],"Wallis Lake":["-32.18268","152.47556"],"Wonboyn Lake":["-37.24121","149.92724"],"Wapengo Lake":["-36.60182","150.01678"],
     "Oyster Harbour North":["-34.964233", "117.955450"],"Oyster Harbour Central":["-34.973600", "117.959117"], "Oyster Harbour East":["-34.972117", "117.969433"],
     "Oyster Harbour South":["-34.986217","117.956850"], "Macleay River":["-30.86667","153.01667"], "Merimbula Lake":["-36.8985","149.8846"],
-    "Pambula Lake":["-36.96811903","149.884795"], "Pindimar": ["-32.6828", "152.09807"]
+    "Pambula Lake":["-36.96811903","149.884795"], "Pindimar - Port Stephens": ["-32.6828", "152.09807"]
     }
 AUTHORS = [{
     "name":"Penelope Ajani",
